@@ -6,8 +6,10 @@ AIMobs is a mod that lets you chat with Minecraft mobs and other entities by cre
 - Fabric
 - Fabric API
 
-### Setup
+### Usage
 After installing the mod, grab your OpenAI API key from [here](https://beta.openai.com/account/api-keys), and set it with the `/aimobs setkey <key>` command.
+
+You should now be able to **talk to mobs by shift+clicking** on them!
 
 ### Commands
 - `/aimobs` - View configuration status
