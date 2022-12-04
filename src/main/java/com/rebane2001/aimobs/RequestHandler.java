@@ -1,7 +1,13 @@
 package com.rebane2001.aimobs;
 
 import com.google.gson.Gson;
-import okhttp3.*;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -34,19 +40,20 @@ public class RequestHandler {
     public static String getAIResponse(String prompt) throws IOException {
         if (prompt.length() > 4096) prompt = prompt.substring(prompt.length() - 4096);
         AIMobsMod.LOGGER.info("Prompt: " + prompt);
-        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+
         OpenAIRequest openAIRequest = new OpenAIRequest(prompt, AIMobsConfig.config.model, AIMobsConfig.config.temperature);
         String data = new Gson().toJson(openAIRequest);
 
-        OkHttpClient client = new OkHttpClient();
-        RequestBody body = RequestBody.create(data, JSON);
-        Request request = new Request.Builder()
-                .url("https://api.openai.com/v1/completions")
-                .addHeader("Authorization", "Bearer " + AIMobsConfig.config.apiKey)
-                .post(body)
-                .build();
-        Response response = client.newCall(request).execute();
-
-        return new Gson().fromJson(Objects.requireNonNull(response.body()).string(), OpenAIResponse.class).choices[0].text.replace("\n", " ");
+        try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
+            HttpPost request = new HttpPost("https://api.openai.com/v1/completions");
+            StringEntity params = new StringEntity(data);
+            request.addHeader("Content-Type", "application/json; charset=utf-8");
+            request.addHeader("Authorization", "Bearer " + AIMobsConfig.config.apiKey);
+            request.setEntity(params);
+            HttpResponse response = httpClient.execute(request);
+            HttpEntity entity = response.getEntity();
+            String responseString = EntityUtils.toString(entity, "UTF-8");
+            return new Gson().fromJson(responseString, OpenAIResponse.class).choices[0].text.replace("\n", " ");
+        }
     }
 }
