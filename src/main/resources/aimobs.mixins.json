@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.rebane2001.aimobs.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "ChatHudAccessor",
+    "ClientPlayerEntityMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

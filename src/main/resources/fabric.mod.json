@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "aimobs",
+  "version": "${version}",
+
+  "name": "AIMobs",
+  "description": "Chat with Minecraft mobs and entities by using the OpenAI API",
+  "authors": [
+    "rebane2001"
+  ],
+  "contact": {
+    "homepage": "https://github.com/rebane2001/aimobs",
+    "sources": "https://github.com/rebane2001/aimobs"
+  },
+
+  "license": "AGPL-3.0",
+  "icon": "assets/aimobs/icon.png",
+
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.rebane2001.aimobs.AIMobsMod"
+    ]
+  },
+  "mixins": [
+    "aimobs.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.14.10",
+    "fabric-api": "*",
+    "minecraft": "~1.19",
+    "java": ">=16"
+  },
+  "suggests": {}
+}
