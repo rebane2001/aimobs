@@ -89,7 +89,7 @@ public class ActionHandler {
     public static void replyToEntity(String message, PlayerEntity player) {
         if (entityId == 0) return;
         prompts += (player.getUuid() == initiator) ? "You say: \"" : ("Your friend " + player.getName().getString() + " says: \"");
-        prompts += message.replace("\"", "'") + "\"\n The " + entityName + "says: \"";
+        prompts += message.replace("\"", "'") + "\"\n The " + entityName + " says: \"";
         getResponse(player);
     }
 

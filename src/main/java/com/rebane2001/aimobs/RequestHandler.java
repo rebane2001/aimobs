@@ -46,8 +46,8 @@ public class RequestHandler {
 
         try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
             HttpPost request = new HttpPost("https://api.openai.com/v1/completions");
-            StringEntity params = new StringEntity(data);
-            request.addHeader("Content-Type", "application/json; charset=utf-8");
+            StringEntity params = new StringEntity(data, "UTF-8");
+            request.addHeader("Content-Type", "application/json");
             request.addHeader("Authorization", "Bearer " + AIMobsConfig.config.apiKey);
             request.setEntity(params);
             HttpResponse response = httpClient.execute(request);
