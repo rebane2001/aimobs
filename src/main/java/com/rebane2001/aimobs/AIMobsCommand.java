@@ -66,7 +66,8 @@ public class AIMobsCommand {
                 .append("\n/aimobs enable/disable - Enable/disable the mod")
                 .append("\n/aimobs setkey <key> - Set OpenAI API key")
                 .append("\n/aimobs setmodel <model> - Set AI model")
-                .append("\n/aimobs settemp <temperature> - Set model temperature");
+                .append("\n/aimobs settemp <temperature> - Set model temperature")
+                .append("\nYou can talk to mobs by shift-clicking on them!");
         context.getSource().sendFeedback(helpText);
         return 1;
     }
