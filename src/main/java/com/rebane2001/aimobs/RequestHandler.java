@@ -10,15 +10,15 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
-import java.util.Objects;
+//import java.util.Objects;
 
 public class RequestHandler {
     private static class OpenAIRequest {
-        String model = "text-davinci-002";
+        String model = "text-davinci-003";
         String stop = "\"";
         String prompt = "";
         float temperature = 0.6f;
-        int max_tokens = 64;
+        int max_tokens = 256;
 
         OpenAIRequest(String prompt) {
             this.prompt = prompt;
