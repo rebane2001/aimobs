@@ -14,15 +14,12 @@ import java.io.IOException;
 
 public class RequestHandler {
     private static class OpenAIRequest {
-        String model = "text-davinci-003";
+        String model = "gpt-3.5-turbo-0301";
         String stop = "\"";
         String prompt = "";
         float temperature = 0.6f;
-        int max_tokens = 256;
+        int max_tokens = 512;
 
-        OpenAIRequest(String prompt) {
-            this.prompt = prompt;
-        }
         OpenAIRequest(String prompt, String model, float temperature) {
             this.prompt = prompt;
             this.model = model;
