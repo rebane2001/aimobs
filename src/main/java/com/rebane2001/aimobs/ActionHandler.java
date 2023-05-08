@@ -47,7 +47,7 @@ public class ActionHandler {
     }
 
     private static String getBiome(Entity entity) {
-        Optional<RegistryKey<Biome>> biomeKey = entity.getWorld().getBiome(entity.getBlockPos()).getKey();
+        Optional<RegistryKey<Biome>> biomeKey = entity.method_48926().getBiome(entity.getBlockPos()).getKey();
         if (biomeKey.isEmpty()) return "place";
         return I18n.translate(Util.createTranslationKey("biome", biomeKey.get().getValue()));
     }
