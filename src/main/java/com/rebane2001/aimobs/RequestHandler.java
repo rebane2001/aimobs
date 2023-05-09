@@ -20,7 +20,6 @@ public class RequestHandler {
         String prompt = "";
         float temperature = 0.6f;
         int max_tokens = 512;
-        int max_tokens = 512;
 
         OpenAIRequest(String prompt, String model, float temperature) {
             this.prompt = prompt;
