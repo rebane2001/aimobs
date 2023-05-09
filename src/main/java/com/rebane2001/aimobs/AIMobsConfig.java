@@ -12,7 +12,7 @@ public class AIMobsConfig {
     public static class Config {
         public boolean enabled = true;
         public String apiKey = "";
-        public String model = "gpt-3.5-turbo-0301";
+        public String model = "text-davinci-003";
         public float temperature = 0.6f;
     }
     public static Config config;
