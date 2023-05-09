@@ -16,6 +16,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
 import net.minecraft.registry.RegistryKey;
+// import net.minecraft.world.EntityView;
 import net.minecraft.world.biome.Biome;
 import org.apache.commons.lang3.StringUtils;
 
@@ -47,7 +48,7 @@ public class ActionHandler {
     }
 
     private static String getBiome(Entity entity) {
-        Optional<RegistryKey<Biome>> biomeKey = entity.getWorld().getBiome(entity.getBlockPos()).getKey();
+        Optional<RegistryKey<Biome>> biomeKey = entity.getEntityWorld().getBiomeAccess().getBiome(entity.getBlockPos()).getKey();
         if (biomeKey.isEmpty()) return "place";
         return I18n.translate(Util.createTranslationKey("biome", biomeKey.get().getValue()));
     }

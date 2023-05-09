@@ -2,7 +2,7 @@
 AIMobs is a mod that lets you chat with Minecraft mobs and other entities by creating prompts and using the OpenAI API.
 
 ### Requirements
-- Minecraft 1.19.3
+- Minecraft 1.19.4
 - Fabric
 - Fabric API
 
