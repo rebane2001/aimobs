@@ -20,10 +20,11 @@ You should now be able to **talk to mobs by shift+clicking** on them!
 - `/aimobs settemp <temperature>` - Set model temperature
 
 ### Notes
-This project was initially made in 1.12 as a client Forge mod, then ported to 1.19 PaperMC as a server plugin, then ported to Fabric 1.19. Because of this, the code can be a little messy and weird. A couple hardcoded limits are 64 as the max token length and 4096 as the max prompt length (longer prompts will get the beginning cut off), these could be made configurable in the future.
+This project was initially made in 1.12 as a client Forge mod, then ported to 1.19 PaperMC as a server plugin, then ported to Fabric 1.19. Because of this, the code can be a little messy and weird. A couple hardcoded limits are 512 as the max token length and 4096 as the max prompt length (longer prompts will get the beginning cut off), these could be made configurable in the future.
 
 Some plans for the future:  
-- Support for the Forge modloader.
+- Native Support for the Quilt modloader.
 - Support for other AI APIs.
+- More languages, already in english, spanish and ukranian.
 
 The icon used is the **🧠** emoji from [Twemoji](https://twemoji.twitter.com/) (CC BY 4.0)
