@@ -11,6 +11,7 @@ import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 //import java.util.Objects;
+//import java.util.Objects;
 
 public class RequestHandler {
     private static class OpenAIRequest {
@@ -18,6 +19,7 @@ public class RequestHandler {
         String stop = "\"";
         String prompt = "";
         float temperature = 0.6f;
+        int max_tokens = 512;
         int max_tokens = 512;
 
         OpenAIRequest(String prompt, String model, float temperature) {
