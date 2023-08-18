@@ -8,42 +8,49 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
-
+ 
 import java.io.IOException;
-//import java.util.Objects;
-//import java.util.Objects;
 
 public class RequestHandler {
-    private static class OpenAIRequest {
-        String model = "text-davinci-003";
-        String stop = "\"";
-        String prompt = "";
-        float temperature = 0.6f;
-        int max_tokens = 512;
+     public static class Message {
+        String role;
+        String content;
 
-        OpenAIRequest(String prompt, String model, float temperature) {
-            this.prompt = prompt;
-            this.model = model;
-            this.temperature = temperature;
+        // Constructor that takes role and content
+        public Message(String role, String content) {
+            this.role = role;
+            this.content = content;
+        }
+    }
+
+    private static class OpenAIRequest {
+        String model = "gpt-3.5-turbo-16k";
+        Integer max_tokens = 64;
+        Message[] messages;
+
+        OpenAIRequest(Message[] messages) {
+            this.messages = messages;
         }
     }
 
     private static class OpenAIResponse {
         static class Choice {
-            String text;
+            static class Message {
+                String role;
+                String content;
+            }
+            Message message;
         }
         Choice[] choices;
     }
 
-    public static String getAIResponse(String prompt) throws IOException {
-        if (prompt.length() > 4096) prompt = prompt.substring(prompt.length() - 4096);
-        AIMobsMod.LOGGER.info("Prompt: " + prompt);
-
-        OpenAIRequest openAIRequest = new OpenAIRequest(prompt, AIMobsConfig.config.model, AIMobsConfig.config.temperature);
+    public static String getAIResponse(Message[] messages) throws IOException {
+        OpenAIRequest openAIRequest = new OpenAIRequest(messages);
         String data = new Gson().toJson(openAIRequest);
+        System.out.println("Query to OpenAI: " + data);
 
         try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
-            HttpPost request = new HttpPost("https://api.openai.com/v1/completions");
+            HttpPost request = new HttpPost("https://api.openai.com/v1/chat/completions");
             StringEntity params = new StringEntity(data, "UTF-8");
             request.addHeader("Content-Type", "application/json");
             request.addHeader("Authorization", "Bearer " + AIMobsConfig.config.apiKey);
@@ -51,7 +58,26 @@ public class RequestHandler {
             HttpResponse response = httpClient.execute(request);
             HttpEntity entity = response.getEntity();
             String responseString = EntityUtils.toString(entity, "UTF-8");
-            return new Gson().fromJson(responseString, OpenAIResponse.class).choices[0].text.replace("\n", " ");
+            String responseText = "";
+            System.out.println("Response from OpenAI: " + responseString);
+            OpenAIResponse responseObj = new Gson().fromJson(responseString, OpenAIResponse.class);
+
+            if (responseObj.choices != null) {
+                boolean allChoicesNull = true;
+                for (OpenAIResponse.Choice choice : responseObj.choices) {
+                    if (choice.message.content != null) {
+                        allChoicesNull = false;
+                        responseText = choice.message.content.replace("\\n", "");
+                        break;
+                    }
+                }
+                if (allChoicesNull) {
+                    responseText = "Sorry, I didn't understand your message.";
+                }
+            } else {
+                responseText = "Unexpected response structure.";
+            }
+            return responseText;
         }
     }
 }

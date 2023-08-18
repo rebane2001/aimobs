@@ -1,5 +1,7 @@
 package com.rebane2001.aimobs;
 
+import com.rebane2001.aimobs.RequestHandler.Message; // Import the Message class
+import java.util.Arrays; // Import the Arrays class
 import com.rebane2001.aimobs.mixin.ChatHudAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ChatHudLine;
@@ -26,11 +28,15 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class ActionHandler {
-    public static String prompts = "";
+    public static Message[] messages = new Message[0]; // Replace prompts string with messages array
     public static String entityName = "";
-    public static int entityId = 0;
+    public static UUID entityId = null;
     public static UUID initiator = null;
     public static long lastRequest = 0;
+    // ConversationsManager to manage all conversations with entities
+    //public static ConversationsManager conversationsManager = new ConversationsManager();
+    public static ConversationsManager conversationsManager = AIMobsMod.conversationsManager;
+
 
     // The waitMessage is the thing that goes '<Name> ...' before an actual response is received
     private static ChatHudLine.Visible waitMessage;
@@ -53,16 +59,41 @@ public class ActionHandler {
         return I18n.translate(Util.createTranslationKey("biome", biomeKey.get().getValue()));
     }
 
+    
     public static void startConversation(Entity entity, PlayerEntity player) {
-        entityId = entity.getId();
-        initiator = player.getUuid();
-        prompts = createPrompt(entity, player);
-        ItemStack heldItem = player.getMainHandStack();
-        if (heldItem.getCount() > 0)
-            prompts = "You are holding a " + heldItem.getName().getString() + " in your hand. " + prompts;
+    if (!(entity instanceof LivingEntity)) return;
+    entityId = entity.getUuid();
+    entityName = StringUtils.capitalize(entity.getType().getName().getString().replace("_", " "));
+    initiator = player.getUuid();
+    // Check if a conversation already exists for this mob
+    if (conversationsManager.conversationExists(entityId)) {
+        player.sendMessage(Text.of("conversation exist:"));
+        // Resume existing conversation
+        Conversation existingConversation = conversationsManager.getConversation(entityId);
+        messages = conversationsManager.getConversation(entityId).getMessages ().toArray(new Message[0]);
+        String newPrompt = "Hi, I'm back. Nice to see you again."; // You would define this method to create the new prompt
+        conversationsManager.addMessageToConversation(entityId, "user", newPrompt); // Add the new user message to the conversation
+        messages = existingConversation.getMessages().toArray(new RequestHandler.Message[0]); // Update messages array
         showWaitMessage(entityName);
         getResponse(player);
+    } else {
+        player.sendMessage(Text.of("new conversation:"));
+        // Start a new conversation
+        conversationsManager.startConversation(entityId);
+        String prompt = createPrompt (entity, player);
+        ItemStack heldItem = player.getMainHandStack();
+        if (heldItem.getCount () > 0)
+        prompt = "You are holding a " + heldItem.getName().getString() + " in your hand. " + prompt;
+        // Adding the player's message to the conversation
+        conversationsManager.addMessageToConversation(entityId, "user", prompt);
+        messages = new Message[] { new Message("user", prompt) }; // Initialize messages array
+        showWaitMessage(entityName);
+        getResponse(player);
+        }
     }
+
+
+
 
     public static void getResponse(PlayerEntity player) {
         // 1.5 second cooldown between requests
@@ -74,9 +105,18 @@ public class ActionHandler {
         lastRequest = System.currentTimeMillis();
         Thread t = new Thread(() -> {
             try {
-                String response = RequestHandler.getAIResponse(prompts);
+                String response = RequestHandler.getAIResponse(messages);
                 player.sendMessage(Text.of("<" + entityName + "> " + response));
-                prompts += response + "\"\n";
+                
+                // Adding the AI's response to the conversation
+                conversationsManager.addMessageToConversation(entityId, "assistant", response);
+
+                // Add response to messages array
+                messages = Arrays.copyOf(messages, messages.length + 1);
+                messages[messages.length - 1] = new Message("assistant", response);
+                conversationsManager.updateMessages(entityId, messages);
+                
+                System.out.println(Arrays.toString(messages));
             } catch (Exception e) {
                 player.sendMessage(Text.of("[AIMobs] Error getting response"));
                 e.printStackTrace();
@@ -87,12 +127,22 @@ public class ActionHandler {
         t.start();
     }
 
+
     public static void replyToEntity(String message, PlayerEntity player) {
-        if (entityId == 0) return;
-        prompts += (player.getUuid() == initiator) ? "You say: \"" : ("Your friend " + player.getName().getString() + " says: \"");
-        prompts += message.replace("\"", "'") + "\"\n The " + entityName + " says: \"";
+        if (entityId == null) return;
+        String prompt = (player.getUuid() == initiator) ? "You say: \"" : ("Your friend " + player.getName().getString() + " says: \"");
+        prompt += message.replace("\"", "'") + "\"\n The " + entityName + " says: \"";
+
+        // Add user message to the conversation
+        conversationsManager.addMessageToConversation(entityId, "user", message);
+
+        // Add user message to messages array for displaying the conversation
+        messages = Arrays.copyOf(messages, messages.length + 1);
+        messages[messages.length - 1] = new Message("user", prompt);
+
         getResponse(player);
     }
+
 
     private static boolean isEntityHurt(LivingEntity entity) {
         return entity.getHealth() * 1.2 < entity.getAttributeValue(EntityAttributes.GENERIC_MAX_HEALTH);
@@ -135,8 +185,9 @@ public class ActionHandler {
         return "You see a " + entityName + ". The " + entityName + " says: \"";
     }
 
-    public static void handlePunch(Entity entity, Entity player) {
-        if (entity.getId() != entityId) return;
-        prompts += ((player.getUuid() == initiator) ? "You punch" : (player.getName().getString() + " punches")) + " the " + entityName + ".\n";
-    }
+    /* public static void handlePunch(Entity entity, Entity player) {
+        if (entity.getUuid() != entityId) return;
+        messages = Arrays.copyOf(messages, messages.length + 1);
+        messages[messages.length - 1] = new Message("user", "You punch the " + entityName + ".");
+    } */
 }
