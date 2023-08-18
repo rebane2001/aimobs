@@ -12,7 +12,8 @@ public class AIMobsConfig {
     public static class Config {
         public boolean enabled = true;
         public String apiKey = "";
-        public String model = "gpt-3.5-turbo"; // Default to GPT-3.5-turbo
+        public String voiceApiKey = ""; // Added field for voice API key
+        public String model = "gpt-3.5-turbo-16k"; // Default to GPT-3.5-turbo-16k
         public float temperature = 0.6f;
     }
     public static Config config;

@@ -185,9 +185,9 @@ public class ActionHandler {
         return "You see a " + entityName + ". The " + entityName + " says: \"";
     }
 
-    /* public static void handlePunch(Entity entity, Entity player) {
+    public static void handlePunch(Entity entity, Entity player) {
         if (entity.getUuid() != entityId) return;
         messages = Arrays.copyOf(messages, messages.length + 1);
         messages[messages.length - 1] = new Message("user", "You punch the " + entityName + ".");
-    } */
+    }
 }
