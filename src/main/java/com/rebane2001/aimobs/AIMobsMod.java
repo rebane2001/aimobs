@@ -36,7 +36,7 @@ public class AIMobsMod implements ClientModInitializer {
             if (entity instanceof MobEntity) {
                 MobEntity mobEntity = (MobEntity) entity;
 
-                // If the entity is a MobEntity or a VillagerEntity, make it look at the player
+                // If the entity is a MobEntity or a VillagerEntity, make it walk to the player
                 if (!world.isClient()) {
                     mobEntity.getNavigation().startMovingTo(player, 0.1D);
                 }

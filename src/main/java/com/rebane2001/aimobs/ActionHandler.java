@@ -17,7 +17,10 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
+import net.minecraft.util.Identifier;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.Registries;
 // import net.minecraft.world.EntityView;
 import net.minecraft.world.biome.Biome;
 import org.apache.commons.lang3.StringUtils;
@@ -26,6 +29,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
+
+
+
+
+
 
 public class ActionHandler {
     public static Message[] messages = new Message[0]; // Replace prompts string with messages array
@@ -37,12 +45,13 @@ public class ActionHandler {
     //public static ConversationsManager conversationsManager = new ConversationsManager();
     public static ConversationsManager conversationsManager = AIMobsMod.conversationsManager;
 
-
     // The waitMessage is the thing that goes '<Name> ...' before an actual response is received
     private static ChatHudLine.Visible waitMessage;
     private static List<ChatHudLine.Visible> getChatHudMessages() {
         return ((ChatHudAccessor)MinecraftClient.getInstance().inGameHud.getChatHud()).getVisibleMessages();
     }
+
+    // Method to show the wait message
     private static void showWaitMessage(String name) {
         if (waitMessage != null) getChatHudMessages().remove(waitMessage);
         waitMessage = new ChatHudLine.Visible(MinecraftClient.getInstance().inGameHud.getTicks(), OrderedText.concat(OrderedText.styledForwardsVisitedString("<" + name + "> ", Style.EMPTY),OrderedText.styledForwardsVisitedString("...", Style.EMPTY.withColor(Formatting.GRAY))), null, true);
@@ -58,7 +67,6 @@ public class ActionHandler {
         if (biomeKey.isEmpty()) return "place";
         return I18n.translate(Util.createTranslationKey("biome", biomeKey.get().getValue()));
     }
-
     
     public static void startConversation(Entity entity, PlayerEntity player) {
     if (!(entity instanceof LivingEntity)) return;
@@ -94,7 +102,6 @@ public class ActionHandler {
 
 
 
-
     public static void getResponse(PlayerEntity player) {
         // 1.5 second cooldown between requests
         if (lastRequest + 1500L > System.currentTimeMillis()) return;
@@ -115,8 +122,7 @@ public class ActionHandler {
                 messages = Arrays.copyOf(messages, messages.length + 1);
                 messages[messages.length - 1] = new Message("assistant", response);
                 conversationsManager.updateMessages(entityId, messages);
-                
-                System.out.println(Arrays.toString(messages));
+
             } catch (Exception e) {
                 player.sendMessage(Text.of("[AIMobs] Error getting response"));
                 e.printStackTrace();

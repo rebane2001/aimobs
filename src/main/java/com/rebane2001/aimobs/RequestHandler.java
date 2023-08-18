@@ -77,6 +77,9 @@ public class RequestHandler {
             } else {
                 responseText = "Unexpected response structure.";
             }
+            if (AIMobsConfig.config.enabled) { // Check if the feature is enabled
+                TextToSpeech.synthesizeAndPlay(responseText); // Call the TTS method with the GPT response
+            }
             return responseText;
         }
     }

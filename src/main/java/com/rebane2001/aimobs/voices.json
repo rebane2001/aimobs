@@ -1,0 +1,484 @@
+{
+    "voices": [
+      {
+        "languageCodes": [
+          "en-AU"
+        ],
+        "name": "en-AU-Standard-A",
+        "ssmlGender": "FEMALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-AU"
+        ],
+        "name": "en-AU-Standard-B",
+        "ssmlGender": "MALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-AU"
+        ],
+        "name": "en-AU-Standard-C",
+        "ssmlGender": "FEMALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-AU"
+        ],
+        "name": "en-AU-Standard-D",
+        "ssmlGender": "MALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-GB"
+        ],
+        "name": "en-GB-Standard-A",
+        "ssmlGender": "FEMALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-GB"
+        ],
+        "name": "en-GB-Standard-B",
+        "ssmlGender": "MALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-GB"
+        ],
+        "name": "en-GB-Standard-C",
+        "ssmlGender": "FEMALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-GB"
+        ],
+        "name": "en-GB-Standard-D",
+        "ssmlGender": "MALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-GB"
+        ],
+        "name": "en-GB-Standard-F",
+        "ssmlGender": "FEMALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-IN"
+        ],
+        "name": "en-IN-Standard-D",
+        "ssmlGender": "FEMALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-IN"
+        ],
+        "name": "en-IN-Standard-A",
+        "ssmlGender": "FEMALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-IN"
+        ],
+        "name": "en-IN-Standard-B",
+        "ssmlGender": "MALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-IN"
+        ],
+        "name": "en-IN-Standard-C",
+        "ssmlGender": "MALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-US"
+        ],
+        "name": "en-US-Standard-A",
+        "ssmlGender": "MALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-US"
+        ],
+        "name": "en-US-Standard-B",
+        "ssmlGender": "MALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-US"
+        ],
+        "name": "en-US-Standard-C",
+        "ssmlGender": "FEMALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-US"
+        ],
+        "name": "en-US-Standard-D",
+        "ssmlGender": "MALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-US"
+        ],
+        "name": "en-US-Standard-E",
+        "ssmlGender": "FEMALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-US"
+        ],
+        "name": "en-US-Standard-F",
+        "ssmlGender": "FEMALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-US"
+        ],
+        "name": "en-US-Standard-G",
+        "ssmlGender": "FEMALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-US"
+        ],
+        "name": "en-US-Standard-H",
+        "ssmlGender": "FEMALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-US"
+        ],
+        "name": "en-US-Standard-I",
+        "ssmlGender": "MALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-US"
+        ],
+        "name": "en-US-Standard-J",
+        "ssmlGender": "MALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-AU"
+        ],
+        "name": "en-AU-News-E",
+        "ssmlGender": "FEMALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-AU"
+        ],
+        "name": "en-AU-News-F",
+        "ssmlGender": "FEMALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-AU"
+        ],
+        "name": "en-AU-News-G",
+        "ssmlGender": "MALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-GB"
+        ],
+        "name": "en-GB-News-G",
+        "ssmlGender": "FEMALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-GB"
+        ],
+        "name": "en-GB-News-H",
+        "ssmlGender": "FEMALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-GB"
+        ],
+        "name": "en-GB-News-I",
+        "ssmlGender": "FEMALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-GB"
+        ],
+        "name": "en-GB-News-J",
+        "ssmlGender": "MALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-GB"
+        ],
+        "name": "en-GB-News-K",
+        "ssmlGender": "MALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-GB"
+        ],
+        "name": "en-GB-News-L",
+        "ssmlGender": "MALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-GB"
+        ],
+        "name": "en-GB-News-M",
+        "ssmlGender": "MALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-US"
+        ],
+        "name": "en-US-News-K",
+        "ssmlGender": "FEMALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-US"
+        ],
+        "name": "en-US-News-L",
+        "ssmlGender": "FEMALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-US"
+        ],
+        "name": "en-US-News-M",
+        "ssmlGender": "MALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-US"
+        ],
+        "name": "en-US-News-N",
+        "ssmlGender": "MALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-AU"
+        ],
+        "name": "en-AU-Standard-A",
+        "ssmlGender": "FEMALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-AU"
+        ],
+        "name": "en-AU-Standard-B",
+        "ssmlGender": "MALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-AU"
+        ],
+        "name": "en-AU-Standard-C",
+        "ssmlGender": "FEMALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-AU"
+        ],
+        "name": "en-AU-Standard-D",
+        "ssmlGender": "MALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-IN"
+        ],
+        "name": "en-IN-Standard-A",
+        "ssmlGender": "FEMALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-IN"
+        ],
+        "name": "en-IN-Standard-B",
+        "ssmlGender": "MALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-IN"
+        ],
+        "name": "en-IN-Standard-C",
+        "ssmlGender": "MALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-IN"
+        ],
+        "name": "en-IN-Standard-D",
+        "ssmlGender": "FEMALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-GB"
+        ],
+        "name": "en-GB-Standard-A",
+        "ssmlGender": "FEMALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-GB"
+        ],
+        "name": "en-GB-Standard-B",
+        "ssmlGender": "MALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-GB"
+        ],
+        "name": "en-GB-Standard-C",
+        "ssmlGender": "FEMALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-GB"
+        ],
+        "name": "en-GB-Standard-D",
+        "ssmlGender": "MALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-GB"
+        ],
+        "name": "en-GB-Standard-F",
+        "ssmlGender": "FEMALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-US"
+        ],
+        "name": "en-US-Standard-A",
+        "ssmlGender": "MALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-US"
+        ],
+        "name": "en-US-Standard-B",
+        "ssmlGender": "MALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-US"
+        ],
+        "name": "en-US-Standard-C",
+        "ssmlGender": "FEMALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-US"
+        ],
+        "name": "en-US-Standard-D",
+        "ssmlGender": "MALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-US"
+        ],
+        "name": "en-US-Standard-E",
+        "ssmlGender": "FEMALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-US"
+        ],
+        "name": "en-US-Standard-F",
+        "ssmlGender": "FEMALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-US"
+        ],
+        "name": "en-US-Standard-G",
+        "ssmlGender": "FEMALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-US"
+        ],
+        "name": "en-US-Standard-H",
+        "ssmlGender": "FEMALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-US"
+        ],
+        "name": "en-US-Standard-I",
+        "ssmlGender": "MALE",
+        "naturalSampleRateHertz": 24000
+      },
+      {
+        "languageCodes": [
+          "en-US"
+        ],
+        "name": "en-US-Standard-J",
+        "ssmlGender": "MALE",
+        "naturalSampleRateHertz": 24000
+      }
+    ]
+  }
