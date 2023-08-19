@@ -15,17 +15,19 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Base64;
-
+import java.util.UUID;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-
 public class TextToSpeech {
+    private static VoiceManager voiceManager = new VoiceManager("/voices.json");
 
-    public static void synthesizeAndPlay(String gptResponseText) {
+    public static void synthesizeAndPlay(String gptResponseText, UUID mobUUID) {
+        Voice voice = voiceManager.getVoiceForMob(mobUUID);
+        String payload = createPayload(gptResponseText, voice);
+
         try {
             String url = "https://texttospeech.googleapis.com/v1beta1/text:synthesize?key=" + AIMobsConfig.config.voiceApiKey;
-            String payload = createPayload(gptResponseText);
 
             try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
                 HttpPost request = new HttpPost(url);
@@ -35,12 +37,9 @@ public class TextToSpeech {
                 HttpResponse response = httpClient.execute(request);
                 HttpEntity entity = response.getEntity();
                 String responseString = EntityUtils.toString(entity, "UTF-8");
-                //System.out.println("Response from Google TTS: " + responseString);
 
-                
                 // Extract the base64 audio content
                 String base64Audio = extractBase64Audio(responseString);
-                //System.out.println("Extracted Base64 Audio: " + base64Audio);
 
                 playSound(base64Audio);
             }
@@ -49,21 +48,22 @@ public class TextToSpeech {
         }
     }
 
-    private static String createPayload(String text) {
+    private static String createPayload(String text, Voice voice) {
+        JsonObject payload = new JsonObject();
+
         JsonObject input = new JsonObject();
         input.addProperty("text", text);
 
-        JsonObject voice = new JsonObject();
-        voice.addProperty("languageCode", "en-gb");
-        voice.addProperty("name", "en-GB-Standard-A");
-        voice.addProperty("ssmlGender", "FEMALE");
+        JsonObject voiceObj = new JsonObject();
+        voiceObj.addProperty("languageCode", voice.getLanguageCodes().get(0)); // Assuming the first language code
+        voiceObj.addProperty("name", voice.getName());
+        voiceObj.addProperty("ssmlGender", voice.getSsmlGender());
 
         JsonObject audioConfig = new JsonObject();
-        audioConfig.addProperty("audioEncoding", "LINEAR16");
+        audioConfig.addProperty("audioEncoding", "LINEAR16"); // WAV encoding
 
-        JsonObject payload = new JsonObject();
         payload.add("input", input);
-        payload.add("voice", voice);
+        payload.add("voice", voiceObj);
         payload.add("audioConfig", audioConfig);
 
         return payload.toString();
@@ -73,7 +73,6 @@ public class TextToSpeech {
         JsonObject responseJson = JsonParser.parseString(responseString).getAsJsonObject();
         return responseJson.get("audioContent").getAsString();
     }
-
 
     public static void playSound(String base64Sound) {
         try {
@@ -100,3 +99,4 @@ public class TextToSpeech {
         }
     }
 }
+

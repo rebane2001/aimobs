@@ -123,6 +123,11 @@ public class ActionHandler {
                 messages[messages.length - 1] = new Message("assistant", response);
                 conversationsManager.updateMessages(entityId, messages);
 
+                // Trigger text-to-speech synthesis and playback
+                if (AIMobsConfig.config.enabled) { // Check if the feature is enabled
+                    TextToSpeech.synthesizeAndPlay(response, entityId); // Pass the mob's UUID to the TTS method
+                }
+
             } catch (Exception e) {
                 player.sendMessage(Text.of("[AIMobs] Error getting response"));
                 e.printStackTrace();

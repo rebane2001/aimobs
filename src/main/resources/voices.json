@@ -1,5 +1,4 @@
-{
-    "voices": [
+[
       {
         "languageCodes": [
           "en-AU"
@@ -481,4 +480,3 @@
         "naturalSampleRateHertz": 24000
       }
     ]
-  }
