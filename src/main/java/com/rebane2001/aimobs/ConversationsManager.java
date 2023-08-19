@@ -1,8 +1,8 @@
 package com.rebane2001.aimobs;
+
 import com.rebane2001.aimobs.RequestHandler.Message;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -14,32 +14,32 @@ import java.util.UUID;
 import java.util.Arrays;
 import java.util.ArrayList;
 
-
 public class ConversationsManager {
     private Map<UUID, Conversation> conversations;
+    private static final String CONVERSATIONS_FILE_PATH = "conversations.json"; // Path to the file where conversations are saved
 
-    // Path to the file where conversations are saved
-    private static final String CONVERSATIONS_FILE_PATH = "conversations.json";
-    
-
+    // Constructor that initializes and loads conversations
     public ConversationsManager() {
         conversations = new HashMap<>();
-        // Load conversations from the file
         loadConversations();
     }
 
+    // Starts a new conversation for a mob
     public void startConversation(UUID mobId) {
         conversations.put(mobId, new Conversation(mobId));
     }
 
+    // Gets a conversation for a specific mob
     public Conversation getConversation(UUID mobId) {
         return conversations.get(mobId);
     }
 
+    // Checks if a conversation exists for a specific mob
     public boolean conversationExists(UUID mobId) {
         return conversations.containsKey(mobId);
     }
 
+    // Updates the messages in a conversation
     public void updateMessages(UUID mobId, Message[] messages) {
         Conversation conversation = getConversation(mobId);
         if (conversation != null) {
@@ -48,30 +48,26 @@ public class ConversationsManager {
         }
     }
 
-
-
+    // Adds a new message to a conversation
     public void addMessageToConversation(UUID mobId, String role, String content) {
         Conversation conversation = getConversation(mobId);
         if (conversation != null) {
             conversation.addMessage(role, content);
-            // Save conversations after adding a message
             saveConversations();
         }
     }
 
+    // Saves conversations to a file
     public void saveConversations() {
         try (FileWriter writer = new FileWriter(CONVERSATIONS_FILE_PATH)) {
-            System.out.println("Saving conversations..."); // Debug output
             Gson gson = new Gson();
             gson.toJson(conversations, writer);
-            System.out.println("Conversations saved successfully!"); // Debug output
         } catch (IOException e) {
-            System.out.println("Error saving conversations!"); // Debug output
             e.printStackTrace();
         }
     }
 
-
+    // Loads conversations from a file
     public void loadConversations() {
         try (FileReader reader = new FileReader(CONVERSATIONS_FILE_PATH)) {
             Gson gson = new Gson();
@@ -87,13 +83,8 @@ public class ConversationsManager {
         }
     }
 
-
+    // Gets the map of all conversations
     public Map<UUID, Conversation> getConversationsMap() {
         return conversations;
     }
-
-
-    
-    // Additional methods to handle persistent storage will be added later
 }
-

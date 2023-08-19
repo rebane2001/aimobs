@@ -16,18 +16,19 @@ import java.util.Random;
 import java.util.UUID;
 
 public class VoiceManager {
-    private List<Voice> voices;
-    private HashMap<UUID, Voice> mobVoices;
-    private Random random;
-    private static final String MOB_VOICES_FILE_PATH = "mob_voices.json";
+    private List<Voice> voices; // List of available voices
+    private HashMap<UUID, Voice> mobVoices; // Map of mob UUIDs to their assigned voices
+    private Random random; // Random generator for voice selection
+    private static final String MOB_VOICES_FILE_PATH = "mob_voices.json"; // File path for mob voices data
 
     public VoiceManager(String voiceFilePath) {
         this.random = new Random();
         this.mobVoices = new HashMap<>();
-        loadVoices(voiceFilePath);
-        loadMobVoices();
+        loadVoices(voiceFilePath); // Load available voices
+        loadMobVoices(); // Load previously assigned mob voices
     }
 
+    // Loads voices from a JSON file
     private void loadVoices(String voiceFilePath) {
         try (Reader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(voiceFilePath), StandardCharsets.UTF_8))) {
             voices = new Gson().fromJson(reader, new TypeToken<List<Voice>>() {}.getType());
@@ -36,23 +37,21 @@ public class VoiceManager {
         }
     }
 
+    // Loads previously assigned mob voices from a JSON file
     private void loadMobVoices() {
         try (FileReader reader = new FileReader(MOB_VOICES_FILE_PATH)) {
             Gson gson = new Gson();
             Type mobVoicesType = new TypeToken<HashMap<UUID, Voice>>() {}.getType();
             HashMap<UUID, Voice> loadedMobVoices = gson.fromJson(reader, mobVoicesType);
-            if (loadedMobVoices != null) {
-                mobVoices = loadedMobVoices;
-            } else {
-                mobVoices = new HashMap<>();
-            }
+            mobVoices = loadedMobVoices != null ? loadedMobVoices : new HashMap<>();
         } catch (IOException e) {
-            mobVoices = new HashMap<>(); // Initialize mobVoices if failed to load
-            saveMobVoices(); // Create and save an empty file
+            mobVoices = new HashMap<>();
+            saveMobVoices(); // Create and save an empty file if failed to load
             e.printStackTrace();
         }
     }
 
+    // Saves the current mob voices to a JSON file
     private void saveMobVoices() {
         try (FileWriter writer = new FileWriter(MOB_VOICES_FILE_PATH)) {
             new Gson().toJson(mobVoices, writer);
@@ -61,6 +60,7 @@ public class VoiceManager {
         }
     }
 
+    // Retrieves the assigned voice for a mob or assigns and saves a new random voice if none exists
     public Voice getVoiceForMob(UUID mobUUID) {
         if (mobVoices.containsKey(mobUUID)) {
             return mobVoices.get(mobUUID);
@@ -72,6 +72,7 @@ public class VoiceManager {
         }
     }
 
+    // Returns a random voice from the available voices list
     private Voice getRandomVoice() {
         return voices.get(random.nextInt(voices.size()));
     }

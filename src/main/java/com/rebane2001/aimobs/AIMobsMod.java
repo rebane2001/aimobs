@@ -27,11 +27,10 @@ public class AIMobsMod implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         AIMobsConfig.loadConfig();
-        KeyBindingHelper.registerKeyBinding(R_KEY_BINDING);
-        // Load the conversations from the file
-        conversationsManager.loadConversations();
+        KeyBindingHelper.registerKeyBinding(R_KEY_BINDING); // Register the key binding
+        conversationsManager.loadConversations(); // Load the conversations from the file
 
-        ClientCommandRegistrationCallback.EVENT.register(AIMobsCommand::setupAIMobsCommand);
+        ClientCommandRegistrationCallback.EVENT.register(AIMobsCommand::setupAIMobsCommand); // Register the AIMobs command
 
         // Check for R keystroke events
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
@@ -44,7 +43,7 @@ public class AIMobsMod implements ClientModInitializer {
             }
         });
 
-        // Registering the UseEntityCallback to make the mob look at the player when shift-attacked
+        // Registering the AttackEntityCallback to handle interactions with entities
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
             if (!AIMobsConfig.config.enabled) return ActionResult.PASS;
             if (!player.isSneaking()) {
@@ -69,6 +68,5 @@ public class AIMobsMod implements ClientModInitializer {
             }
             return ActionResult.PASS; // Return pass to allow other interactions to proceed
         });
-
     }
 }

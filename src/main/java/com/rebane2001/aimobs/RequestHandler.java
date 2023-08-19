@@ -1,6 +1,5 @@
 package com.rebane2001.aimobs;
 
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -9,39 +8,27 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import java.io.ByteArrayOutputStream;
-
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-
 
 public class RequestHandler {
-     public static class Message {
+    // Nested class to represent a message for OpenAI
+    public static class Message {
         String role;
         String content;
 
-        // Constructor that takes role and content
         public Message(String role, String content) {
             this.role = role;
             this.content = content;
         }
     }
 
+    // Nested classes to represent OpenAI request and response structure
     private static class OpenAIRequest {
         String model = "gpt-3.5-turbo-16k";
         Integer max_tokens = 128;
@@ -63,11 +50,9 @@ public class RequestHandler {
         Choice[] choices;
     }
 
-
-
-
-
+    // Method to transcribe an audio file
     public static String getTranscription() throws IOException {
+        // Boundary for the multipart/form-data request
         String boundary = "----WebKitFormBoundary7MA4YWxkTrZu0gW";
         URL url = new URL("https://api.openai.com/v1/audio/transcriptions");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -76,24 +61,22 @@ public class RequestHandler {
         connection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
         connection.setDoOutput(true);
 
-        // Read the file into a ByteArrayOutputStream for the HTTP request
+        // Read the audio file and build the request body
         ByteArrayOutputStream requestBytes = new ByteArrayOutputStream();
         File inputFile = new File("audio.wav");
         try (InputStream fileInputStream = new FileInputStream(inputFile);
-            OutputStream os = requestBytes;
-            PrintWriter writer = new PrintWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8), true)) {
+             OutputStream os = requestBytes;
+             PrintWriter writer = new PrintWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8), true)) {
             writer.append("--" + boundary).append("\r\n");
             writer.append("Content-Disposition: form-data; name=\"file\"; filename=\"audio.wav\"").append("\r\n");
             writer.append("Content-Type: audio/wav").append("\r\n");
             writer.append("\r\n").flush();
-
             byte[] buffer = new byte[1024];
             int bytesRead;
             while ((bytesRead = fileInputStream.read(buffer)) != -1) {
                 os.write(buffer, 0, bytesRead);
             }
             os.flush();
-
             writer.append("\r\n").flush();
             writer.append("--" + boundary).append("\r\n");
             writer.append("Content-Disposition: form-data; name=\"model\"").append("\r\n");
@@ -101,23 +84,18 @@ public class RequestHandler {
             writer.append("--" + boundary + "--").append("\r\n").flush();
         }
 
-        // Print the request headers
-        System.out.println("Request method: " + connection.getRequestMethod());
-        for (String header : connection.getRequestProperties().keySet()) {
-            System.out.println(header + ": " + connection.getRequestProperty(header));
-        }
-
-        // Write the request body to the actual connection output stream
+        // Write the request body to the connection
         try (OutputStream os = connection.getOutputStream()) {
             os.write(requestBytes.toByteArray());
         }
 
+        // Read the response from OpenAI
         StringBuilder response = new StringBuilder();
         int responseCode = connection.getResponseCode();
         if (responseCode != 200) {
             InputStream errorStream = connection.getErrorStream();
             String errorResponse = new BufferedReader(new InputStreamReader(errorStream))
-                .lines().collect(Collectors.joining("\n"));
+                    .lines().collect(Collectors.joining("\n"));
             System.err.println("Error response from OpenAI Whisper: " + errorResponse);
             throw new IOException("Server returned HTTP response code: " + responseCode);
         }
@@ -128,25 +106,16 @@ public class RequestHandler {
             }
         }
 
-        System.out.println("Response from OpenAI Whisper: " + response);
-
+        // Parse the response and return the transcription
         Gson gson = new Gson();
         JsonObject jsonResponse = gson.fromJson(response.toString(), JsonObject.class);
         return jsonResponse.get("text").getAsString();
     }
 
-
-
-
-
-
-
-
-
+    // Method to get AI response from OpenAI
     public static String getAIResponse(Message[] messages) throws IOException {
         OpenAIRequest openAIRequest = new OpenAIRequest(messages);
         String data = new Gson().toJson(openAIRequest);
-        System.out.println("Query to OpenAI: " + data);
 
         try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
             HttpPost request = new HttpPost("https://api.openai.com/v1/chat/completions");
@@ -157,10 +126,10 @@ public class RequestHandler {
             HttpResponse response = httpClient.execute(request);
             HttpEntity entity = response.getEntity();
             String responseString = EntityUtils.toString(entity, "UTF-8");
-            String responseText = "";
-            System.out.println("Response from OpenAI: " + responseString);
-            OpenAIResponse responseObj = new Gson().fromJson(responseString, OpenAIResponse.class);
 
+            // Parse the response
+            OpenAIResponse responseObj = new Gson().fromJson(responseString, OpenAIResponse.class);
+            String responseText = "";
             if (responseObj.choices != null) {
                 boolean allChoicesNull = true;
                 for (OpenAIResponse.Choice choice : responseObj.choices) {

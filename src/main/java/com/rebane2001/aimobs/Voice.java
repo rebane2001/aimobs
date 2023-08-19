@@ -3,10 +3,10 @@ package com.rebane2001.aimobs;
 import java.util.List;
 
 public class Voice {
-    private List<String> languageCodes;
-    private String name;
-    private String ssmlGender;
-    private int naturalSampleRateHertz;
+    private List<String> languageCodes; // List of supported language codes for the voice
+    private String name; // Name of the voice
+    private String ssmlGender; // Gender as defined in SSML
+    private int naturalSampleRateHertz; // Natural sample rate of the voice
 
     public Voice(List<String> languageCodes, String name, String ssmlGender, int naturalSampleRateHertz) {
         this.languageCodes = languageCodes;

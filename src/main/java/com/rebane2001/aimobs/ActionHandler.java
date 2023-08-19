@@ -1,7 +1,7 @@
 package com.rebane2001.aimobs;
 
-import com.rebane2001.aimobs.RequestHandler.Message; // Import the Message class
-import java.util.Arrays; // Import the Arrays class
+import com.rebane2001.aimobs.RequestHandler.Message;
+import java.util.Arrays;
 import com.rebane2001.aimobs.mixin.ChatHudAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ChatHudLine;
@@ -21,18 +21,14 @@ import net.minecraft.util.Identifier;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.Registries;
-// import net.minecraft.world.EntityView;
 import net.minecraft.world.biome.Biome;
 import org.apache.commons.lang3.StringUtils;
-
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 import java.io.InputStream;
 import java.io.IOException;
-
-
 
 
 
@@ -71,9 +67,6 @@ public class ActionHandler {
         if (biomeKey.isEmpty()) return "place";
         return I18n.translate(Util.createTranslationKey("biome", biomeKey.get().getValue()));
     }
-
-
-    
 
     // Method to handle the "R" key press
     public static void onRKeyPress() {
@@ -118,7 +111,6 @@ public class ActionHandler {
     initiator = player.getUuid();
     // Check if a conversation already exists for this mob
     if (conversationsManager.conversationExists(entityId)) {
-        player.sendMessage(Text.of("conversation exist:"));
         // Resume existing conversation
         Conversation existingConversation = conversationsManager.getConversation(entityId);
         messages = conversationsManager.getConversation(entityId).getMessages ().toArray(new Message[0]);
@@ -128,7 +120,6 @@ public class ActionHandler {
         showWaitMessage(entityName);
         getResponse(player);
     } else {
-        player.sendMessage(Text.of("new conversation:"));
         // Start a new conversation
         conversationsManager.startConversation(entityId);
         String prompt = createPrompt (entity, player);
@@ -142,8 +133,6 @@ public class ActionHandler {
         getResponse(player);
         }
     }
-
-
 
     public static void getResponse(PlayerEntity player) {
         // 1.5 second cooldown between requests
@@ -181,7 +170,6 @@ public class ActionHandler {
         t.start();
     }
 
-
     public static void replyToEntity(String message, PlayerEntity player) {
         if (entityId == null) return;
         String prompt = (player.getUuid() == initiator) ? "You say: \"" : ("Your friend " + player.getName().getString() + " says: \"");
@@ -196,7 +184,6 @@ public class ActionHandler {
 
         getResponse(player);
     }
-
 
     private static boolean isEntityHurt(LivingEntity entity) {
         return entity.getHealth() * 1.2 < entity.getAttributeValue(EntityAttributes.GENERIC_MAX_HEALTH);
