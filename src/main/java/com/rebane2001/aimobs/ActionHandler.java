@@ -29,7 +29,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
-
+import java.io.InputStream;
+import java.io.IOException;
 
 
 
@@ -42,8 +43,11 @@ public class ActionHandler {
     public static UUID initiator = null;
     public static long lastRequest = 0;
     // ConversationsManager to manage all conversations with entities
-    //public static ConversationsManager conversationsManager = new ConversationsManager();
     public static ConversationsManager conversationsManager = AIMobsMod.conversationsManager;
+    // Field to track if the "R" key is being held down
+    public static boolean isRKeyPressed = false;
+    // AudioRecorder to record audio from the microphone
+    private static AudioRecorder audioRecorder = new AudioRecorder();
 
     // The waitMessage is the thing that goes '<Name> ...' before an actual response is received
     private static ChatHudLine.Visible waitMessage;
@@ -66,6 +70,45 @@ public class ActionHandler {
         Optional<RegistryKey<Biome>> biomeKey = entity.getEntityWorld().getBiomeAccess().getBiome(entity.getBlockPos()).getKey();
         if (biomeKey.isEmpty()) return "place";
         return I18n.translate(Util.createTranslationKey("biome", biomeKey.get().getValue()));
+    }
+
+
+    
+
+    // Method to handle the "R" key press
+    public static void onRKeyPress() {
+        if (entityId != null && !isRKeyPressed) { // Check if a conversation has been started
+            isRKeyPressed = true;
+            audioRecorder.startRecording();
+            System.out.println("Recording started"); // Test message
+            // TODO: Add code to start voice recording
+        }
+    }
+
+    // Method to handle the "R" key release
+    public static void onRKeyRelease() {
+        if (isRKeyPressed) {
+            isRKeyPressed = false;
+            System.out.println("R key released! Stopping voice input...");
+            try {
+                // Stop the recording and get the WAV input stream
+                InputStream wavInputStream = audioRecorder.stopRecording();
+
+                // Get the transcription from OpenAI's Whisper ASR
+                //String transcription = RequestHandler.getTranscription(wavInputStream);
+                String transcription = RequestHandler.getTranscription();
+                // You can now use the transcription in your conversation logic
+                // For example, send it as a reply to the entity
+                PlayerEntity player = MinecraftClient.getInstance().player;
+                if (player != null) {
+                    replyToEntity(transcription, player);
+                }
+
+            } catch (IOException e) {
+                System.err.println("Error transcribing audio:");
+                e.printStackTrace();
+            }
+        }
     }
     
     public static void startConversation(Entity entity, PlayerEntity player) {
