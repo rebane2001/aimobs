@@ -17,6 +17,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.lwjgl.glfw.GLFW;
 
+
+
+
+
+
 public class AIMobsMod implements ClientModInitializer {
     // Registering the R keyboard key as binding for STT
     public static final KeyBinding R_KEY_BINDING = new KeyBinding("key.aimobs.voice_input", GLFW.GLFW_KEY_R, "category.aimobs");
@@ -32,8 +37,10 @@ public class AIMobsMod implements ClientModInitializer {
 
         ClientCommandRegistrationCallback.EVENT.register(AIMobsCommand::setupAIMobsCommand); // Register the AIMobs command
 
-        // Check for R keystroke events
+        // Check for R keystroke events 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            ActionHandler.checkConversationEnd(); // Check if the conversation should end
+            // Check for key press
             while (AIMobsMod.R_KEY_BINDING.wasPressed()) {
                 ActionHandler.onRKeyPress();
             }
@@ -53,12 +60,6 @@ public class AIMobsMod implements ClientModInitializer {
             }
             if (entity instanceof MobEntity) {
                 MobEntity mobEntity = (MobEntity) entity;
-
-                // If the entity is a MobEntity or a VillagerEntity, make it walk to the player
-                if (!world.isClient()) {
-                    mobEntity.getNavigation().startMovingTo(player, 0.1D);
-                }
-
                 // Start the conversation
                 if (world.isClient()) {
                     ActionHandler.startConversation(entity, player);

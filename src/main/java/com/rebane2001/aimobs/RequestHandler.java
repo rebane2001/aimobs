@@ -112,6 +112,8 @@ public class RequestHandler {
         return jsonResponse.get("text").getAsString();
     }
 
+
+
     // Method to get AI response from OpenAI
     public static String getAIResponse(Message[] messages) throws IOException {
         OpenAIRequest openAIRequest = new OpenAIRequest(messages);

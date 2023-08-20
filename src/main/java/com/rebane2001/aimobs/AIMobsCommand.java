@@ -39,16 +39,18 @@ public class AIMobsCommand {
 
     // Method to show the status of the mod's configuration
     public static int status(CommandContext<FabricClientCommandSource> context) {
-        // Status details
         boolean hasKey = AIMobsConfig.config.apiKey.length() > 0;
         boolean hasVoiceKey = AIMobsConfig.config.voiceApiKey.length() > 0;
         Text yes = Text.literal("Yes").formatted(Formatting.GREEN);
         Text no = Text.literal("No").formatted(Formatting.RED);
         Text helpText = Text.literal("")
                 .append(Text.literal("AIMobs").formatted(Formatting.UNDERLINE))
-                // ...
-                // Additional details here
-                // ...
+                .append("").formatted(Formatting.RESET)
+                .append("\nEnabled: ").append(AIMobsConfig.config.enabled ? yes : no)
+                .append("\nAPI Key: ").append(hasKey ? yes : no)
+                .append("\nVoice API Key: ").append(hasVoiceKey ? yes : no)
+                .append("\nModel: ").append(AIMobsConfig.config.model)
+                .append("\nTemp: ").append(String.valueOf(AIMobsConfig.config.temperature))
                 .append("\n\nUse ").append(Text.literal("/aimobs help").formatted(Formatting.GRAY)).append(" for help");
         context.getSource().sendFeedback(helpText);
         return 1;
@@ -56,12 +58,16 @@ public class AIMobsCommand {
 
     // Method to show help text
     public static int help(CommandContext<FabricClientCommandSource> context) {
-        // Help text details
         Text helpText = Text.literal("")
                 .append("AIMobs Commands").formatted(Formatting.UNDERLINE)
-                // ...
-                // Additional details here
-                // ...
+                .append("").formatted(Formatting.RESET)
+                .append("\n/aimobs - View configuration status")
+                .append("\n/aimobs help - View commands help")
+                .append("\n/aimobs enable/disable - Enable/disable the mod")
+                .append("\n/aimobs setkey <key> - Set OpenAI API key")
+                .append("\n/aimobs setvoicekey <voicekey> - Set Google Text-To-Speech API key")
+                .append("\n/aimobs setmodel <model> - Set AI model")
+                .append("\n/aimobs settemp <temperature> - Set model temperature")
                 .append("\nYou can talk to mobs by shift-clicking on them!");
         context.getSource().sendFeedback(helpText);
         return 1;

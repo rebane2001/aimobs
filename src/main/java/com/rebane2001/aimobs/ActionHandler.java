@@ -11,6 +11,8 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.mob.MobEntity;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Style;
@@ -34,10 +36,12 @@ import java.io.IOException;
 
 public class ActionHandler {
     public static Message[] messages = new Message[0]; // Replace prompts string with messages array
+    public static MobEntity currentEntity = null;
     public static String entityName = "";
     public static UUID entityId = null;
     public static UUID initiator = null;
     public static long lastRequest = 0;
+    public static long conversationEndTime = 0; // Track when the conversation should end
     // ConversationsManager to manage all conversations with entities
     public static ConversationsManager conversationsManager = AIMobsMod.conversationsManager;
     // Field to track if the "R" key is being held down
@@ -72,9 +76,10 @@ public class ActionHandler {
     public static void onRKeyPress() {
         if (entityId != null && !isRKeyPressed) { // Check if a conversation has been started
             isRKeyPressed = true;
-            audioRecorder.startRecording();
+            PlayerEntity player = MinecraftClient.getInstance().player;
+            player.sendMessage(Text.of("Listening.."));
             System.out.println("Recording started"); // Test message
-            // TODO: Add code to start voice recording
+            audioRecorder.startRecording();
         }
     }
 
@@ -82,6 +87,8 @@ public class ActionHandler {
     public static void onRKeyRelease() {
         if (isRKeyPressed) {
             isRKeyPressed = false;
+            PlayerEntity player = MinecraftClient.getInstance().player;
+            player.sendMessage(Text.of("Stopped listening."));
             System.out.println("R key released! Stopping voice input...");
             try {
                 // Stop the recording and get the WAV input stream
@@ -92,7 +99,6 @@ public class ActionHandler {
                 String transcription = RequestHandler.getTranscription();
                 // You can now use the transcription in your conversation logic
                 // For example, send it as a reply to the entity
-                PlayerEntity player = MinecraftClient.getInstance().player;
                 if (player != null) {
                     replyToEntity(transcription, player);
                 }
@@ -122,7 +128,7 @@ public class ActionHandler {
     } else {
         // Start a new conversation
         conversationsManager.startConversation(entityId);
-        String prompt = createPrompt (entity, player);
+        String prompt = PromptManager.createPrompt(entity, player, entityName);
         ItemStack heldItem = player.getMainHandStack();
         if (heldItem.getCount () > 0)
         prompt = "You are holding a " + heldItem.getName().getString() + " in your hand. " + prompt;
@@ -142,6 +148,8 @@ public class ActionHandler {
             return;
         }
         lastRequest = System.currentTimeMillis();
+        // Set the time when the conversation should end (30 seconds from now)
+        conversationEndTime = lastRequest + 30000L;
         Thread t = new Thread(() -> {
             try {
                 String response = RequestHandler.getAIResponse(messages);
@@ -185,48 +193,21 @@ public class ActionHandler {
         getResponse(player);
     }
 
-    private static boolean isEntityHurt(LivingEntity entity) {
-        return entity.getHealth() * 1.2 < entity.getAttributeValue(EntityAttributes.GENERIC_MAX_HEALTH);
-    }
 
-    private static String createPromptVillager(VillagerEntity villager, PlayerEntity player) {
-        boolean isHurt = isEntityHurt(villager);
-        entityName = "Villager";
-        String villageName = villager.getVillagerData().getType().toString().toLowerCase(Locale.ROOT) + " village";
-        int rep = villager.getReputation(player);
-        if (rep < -5) villageName = villageName + " that sees you as horrible";
-        if (rep > 5) villageName = villageName + " that sees you as reputable";
-        if (villager.isBaby()) {
-            entityName = "Villager Kid";
-            return String.format("You see a kid in a %s. The kid shouts: \"", villageName);
+    public static void checkConversationEnd() {
+        if (entityId != null && System.currentTimeMillis() > conversationEndTime) {
+            // End the conversation
+            currentEntity = null;
+            entityId = null;
+            entityName = "";
+            initiator = null;
+            messages = new Message[0];
+            conversationEndTime = 0;
+            System.out.println("Conversation ended"); // Test message
         }
-        String profession = StringUtils.capitalize(villager.getVillagerData().getProfession().toString().toLowerCase(Locale.ROOT).replace("none", "freelancer"));
-        entityName = profession;
-        if (villager.getVillagerData().getLevel() >= 3) profession = "skilled " + profession;
-        if (isHurt) profession = "hurt " + profession;
-        return String.format("You meet a %s in a %s. The villager says to you: \"", profession, villageName);
     }
 
-    public static String createPromptLiving(LivingEntity entity) {
-        boolean isHurt = isEntityHurt(entity);
-        String baseName = entity.getName().getString();
-        String name = baseName;
-        Text customName = entity.getCustomName();
-        if (customName != null)
-            name = baseName + " called " + customName.getString();
-        entityName = baseName;
-        if (isHurt) name = "hurt " + name;
-        return String.format("You meet a talking %s in the %s. The %s says to you: \"", name, getBiome(entity), baseName);
-    }
-
-    public static String createPrompt(Entity entity, PlayerEntity player) {
-        if (entity instanceof VillagerEntity villager) return createPromptVillager(villager, player);
-        if (entity instanceof LivingEntity entityLiving) return createPromptLiving(entityLiving);
-        entityName = entity.getName().getString();
-        return "You see a " + entityName + ". The " + entityName + " says: \"";
-    }
-
-    public static void handlePunch(Entity entity, Entity player) {
+    public static void handlePunch(Entity entity, Entity players) {
         if (entity.getUuid() != entityId) return;
         messages = Arrays.copyOf(messages, messages.length + 1);
         messages[messages.length - 1] = new Message("user", "You punch the " + entityName + ".");
