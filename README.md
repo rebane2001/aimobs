@@ -1,10 +1,15 @@
 # AIMobs
-AIMobs is a mod that lets you chat or talk with Minecraft mobs and other entities by creating prompts and using the OpenAI API.
+AIMobs is a mod that lets you chat or talk (hold R key) with Minecraft mobs and other entities by creating prompts and using the OpenAI API.
 
 ### Requirements
 - Minecraft 1.19.4
 - Fabric
-- Fabric API
+- Fabric API 0.86.1.19.4
+- Java 17 [here](https://adoptium.net/en-GB/temurin/releases/?version=17)
+- (Prism Launcher [here](https://prismlauncher.org))
+
+### Installation
+[YouTube Tutorial] (https://www.youtube.com/watch?v=EKCaTp5a8ZU)
 
 ### Usage
 After installing the mod, grab your OpenAI API key from [here](https://beta.openai.com/account/api-keys), and set it with the `/aimobs setkey <key>` command. Also in order to let the mobs talk to you: First enable the Cloud Text-to-Speech API - [here](https://console.cloud.google.com/apis/library/texttospeech.googleapis.com) and then create your API key credential [here](https://console.cloud.google.com/apis/credentials). Once you have it, set it with the `/aimobs setvoicekey <voicekey>` command
