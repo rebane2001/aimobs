@@ -5,32 +5,27 @@ import java.util.Arrays;
 import com.rebane2001.aimobs.mixin.ChatHudAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ChatHudLine;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.mob.MobEntity;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
-import net.minecraft.util.Identifier;
 import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.Registries;
 import net.minecraft.world.biome.Biome;
 import org.apache.commons.lang3.StringUtils;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 import java.io.InputStream;
 import java.io.IOException;
+import net.minecraft.nbt.NbtCompound;
 
 
 
@@ -66,12 +61,6 @@ public class ActionHandler {
         waitMessage = null;
     }
 
-    private static String getBiome(Entity entity) {
-        Optional<RegistryKey<Biome>> biomeKey = entity.getEntityWorld().getBiomeAccess().getBiome(entity.getBlockPos()).getKey();
-        if (biomeKey.isEmpty()) return "place";
-        return I18n.translate(Util.createTranslationKey("biome", biomeKey.get().getValue()));
-    }
-
     // Method to handle the "R" key press
     public static void onRKeyPress() {
         if (entityId != null && !isRKeyPressed) { // Check if a conversation has been started
@@ -90,55 +79,85 @@ public class ActionHandler {
             PlayerEntity player = MinecraftClient.getInstance().player;
             player.sendMessage(Text.of("Stopped listening."));
             System.out.println("R key released! Stopping voice input...");
-            try {
-                // Stop the recording and get the WAV input stream
-                InputStream wavInputStream = audioRecorder.stopRecording();
+            // Check if the voice key is set in the configuration
+            if (AIMobsConfig.config.voiceApiKey.length() > 0) {
+                try {
+                    // Stop the recording and get the WAV input stream
+                    InputStream wavInputStream = audioRecorder.stopRecording();
 
-                // Get the transcription from OpenAI's Whisper ASR
-                //String transcription = RequestHandler.getTranscription(wavInputStream);
-                String transcription = RequestHandler.getTranscription();
-                // You can now use the transcription in your conversation logic
-                // For example, send it as a reply to the entity
-                if (player != null) {
-                    replyToEntity(transcription, player);
+                    // Get the transcription from OpenAI's Whisper ASR
+                    String transcription = RequestHandler.getTranscription(wavInputStream);
+                    // You can now use the transcription in your conversation logic
+                    // For example, send it as a reply to the entity
+                    if (player != null) {
+                        replyToEntity(transcription, player);
+                    }
+
+                } catch (IOException e) {
+                    System.err.println("Error transcribing audio:");
+                    e.printStackTrace();
                 }
-
-            } catch (IOException e) {
-                System.err.println("Error transcribing audio:");
-                e.printStackTrace();
+            } else {
+                System.err.println("Voice API key is not set. Please set it using /aimobs setvoicekey <voicekey>.");
             }
         }
     }
-    
+
+
     public static void startConversation(Entity entity, PlayerEntity player) {
-    if (!(entity instanceof LivingEntity)) return;
-    entityId = entity.getUuid();
-    entityName = StringUtils.capitalize(entity.getType().getName().getString().replace("_", " "));
-    initiator = player.getUuid();
-    // Check if a conversation already exists for this mob
-    if (conversationsManager.conversationExists(entityId)) {
-        // Resume existing conversation
-        Conversation existingConversation = conversationsManager.getConversation(entityId);
-        messages = conversationsManager.getConversation(entityId).getMessages ().toArray(new Message[0]);
-        String newPrompt = "Hi, I'm back. Nice to see you again."; // You would define this method to create the new prompt
-        conversationsManager.addMessageToConversation(entityId, "user", newPrompt); // Add the new user message to the conversation
-        messages = existingConversation.getMessages().toArray(new RequestHandler.Message[0]); // Update messages array
-        showWaitMessage(entityName);
-        getResponse(player);
-    } else {
-        // Start a new conversation
-        conversationsManager.startConversation(entityId);
-        String prompt = PromptManager.createPrompt(entity, player, entityName);
-        ItemStack heldItem = player.getMainHandStack();
-        if (heldItem.getCount () > 0)
-        prompt = "You are holding a " + heldItem.getName().getString() + " in your hand. " + prompt;
-        // Adding the player's message to the conversation
-        conversationsManager.addMessageToConversation(entityId, "user", prompt);
-        messages = new Message[] { new Message("user", prompt) }; // Initialize messages array
-        showWaitMessage(entityName);
-        getResponse(player);
+        if (!(entity instanceof LivingEntity)) return;
+        if (entity instanceof MobEntity) {
+            currentEntity = (MobEntity) entity; // Store the mob entity reference
+        }
+        entityId = entity.getUuid();
+        entityName = StringUtils.capitalize(entity.getType().getName().getString().replace("_", " "));
+        initiator = player.getUuid();
+        // Check if a conversation already exists for this mob
+        if (conversationsManager.conversationExists(entityId)) {
+            // Resume existing conversation
+            Conversation existingConversation = conversationsManager.getConversation(entityId);
+            messages = conversationsManager.getConversation(entityId).getMessages().toArray(new Message[0]);
+            String newPrompt = "Hi, I'm back. Nice to see you again."; // You would define this method to create the new prompt
+            conversationsManager.addMessageToConversation(entityId, "user", newPrompt); // Add the new user message to the conversation
+            messages = existingConversation.getMessages().toArray(new RequestHandler.Message[0]); // Update messages array
+            showWaitMessage(entityName);
+            getResponse(player);
+        } else {
+            // Start a new conversation
+            conversationsManager.startConversation(entityId);
+            String prompt = PromptManager.createPrompt(entity, player, entityName);
+            ItemStack heldItem = player.getMainHandStack();
+            if (heldItem.getCount() > 0) {
+                prompt = "You are holding a " + heldItem.getName().getString() + " in your hand. " + prompt;
+            }
+            // Adding the player's message to the conversation
+            conversationsManager.addMessageToConversation(entityId, "user", prompt);
+            messages = new Message[] { new Message("user", prompt) }; // Initialize messages array
+            showWaitMessage(entityName);
+            getResponse(player);
         }
     }
+
+
+    public static boolean checkConversationEnd() {
+        if (entityId != null && System.currentTimeMillis() > conversationEndTime) {
+            if (currentEntity != null) {
+                currentEntity.getNavigation().stop(); // Stop the mob's movement
+            }
+            // End the conversation
+            currentEntity = null; // Reset the mob entity reference
+            entityId = null;
+            entityName = "";
+            initiator = null;
+            messages = new Message[0];
+            conversationEndTime = 0;
+            System.out.println("Conversation ended"); // Test message
+            return true;
+        }
+        return false;
+    }
+
+
 
     public static void getResponse(PlayerEntity player) {
         // 1.5 second cooldown between requests
@@ -164,7 +183,7 @@ public class ActionHandler {
                 conversationsManager.updateMessages(entityId, messages);
 
                 // Trigger text-to-speech synthesis and playback
-                if (AIMobsConfig.config.enabled) { // Check if the feature is enabled
+                if (AIMobsConfig.config.enabled && AIMobsConfig.config.voiceApiKey.length() > 0) { // Check if the feature is enabled
                     TextToSpeech.synthesizeAndPlay(response, entityId); // Pass the mob's UUID to the TTS method
                 }
 
@@ -191,20 +210,6 @@ public class ActionHandler {
         messages[messages.length - 1] = new Message("user", prompt);
 
         getResponse(player);
-    }
-
-
-    public static void checkConversationEnd() {
-        if (entityId != null && System.currentTimeMillis() > conversationEndTime) {
-            // End the conversation
-            currentEntity = null;
-            entityId = null;
-            entityName = "";
-            initiator = null;
-            messages = new Message[0];
-            conversationEndTime = 0;
-            System.out.println("Conversation ended"); // Test message
-        }
     }
 
     public static void handlePunch(Entity entity, Entity players) {

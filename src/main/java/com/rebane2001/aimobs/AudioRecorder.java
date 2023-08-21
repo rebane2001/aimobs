@@ -81,14 +81,17 @@ public class AudioRecorder {
         byte[] audioData = audioOutputStream.toByteArray();
         AudioFormat format = getAudioFormat();
         long numFrames = audioData.length / format.getFrameSize();
+
+        // Convert the byte array into an AudioInputStream
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(audioData);
         AudioInputStream audioInputStream = new AudioInputStream(byteArrayInputStream, format, numFrames);
 
-        // Write to a WAV file
-        File wavFile = new File("audio.wav");
-        AudioSystem.write(audioInputStream, fileType, wavFile);
+        // Convert the AudioInputStream into a ByteArrayOutputStream to create a WAV file in memory
+        ByteArrayOutputStream wavOutputStream = new ByteArrayOutputStream();
+        AudioSystem.write(audioInputStream, fileType, wavOutputStream);
 
-        // Return the AudioInputStream
-        return new AudioInputStream(new ByteArrayInputStream(audioData), format, numFrames);
+        // Return an InputStream containing the WAV data
+        return new ByteArrayInputStream(wavOutputStream.toByteArray());
     }
+
 }

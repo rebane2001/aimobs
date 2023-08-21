@@ -50,8 +50,7 @@ public class RequestHandler {
         Choice[] choices;
     }
 
-    // Method to transcribe an audio file
-    public static String getTranscription() throws IOException {
+    public static String getTranscription(InputStream audioInputStream) throws IOException {
         // Boundary for the multipart/form-data request
         String boundary = "----WebKitFormBoundary7MA4YWxkTrZu0gW";
         URL url = new URL("https://api.openai.com/v1/audio/transcriptions");
@@ -61,19 +60,17 @@ public class RequestHandler {
         connection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
         connection.setDoOutput(true);
 
-        // Read the audio file and build the request body
+        // Build the request body using the audioInputStream
         ByteArrayOutputStream requestBytes = new ByteArrayOutputStream();
-        File inputFile = new File("audio.wav");
-        try (InputStream fileInputStream = new FileInputStream(inputFile);
-             OutputStream os = requestBytes;
-             PrintWriter writer = new PrintWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8), true)) {
+        try (OutputStream os = requestBytes;
+            PrintWriter writer = new PrintWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8), true)) {
             writer.append("--" + boundary).append("\r\n");
             writer.append("Content-Disposition: form-data; name=\"file\"; filename=\"audio.wav\"").append("\r\n");
             writer.append("Content-Type: audio/wav").append("\r\n");
             writer.append("\r\n").flush();
             byte[] buffer = new byte[1024];
             int bytesRead;
-            while ((bytesRead = fileInputStream.read(buffer)) != -1) {
+            while ((bytesRead = audioInputStream.read(buffer)) != -1) {
                 os.write(buffer, 0, bytesRead);
             }
             os.flush();
@@ -111,6 +108,7 @@ public class RequestHandler {
         JsonObject jsonResponse = gson.fromJson(response.toString(), JsonObject.class);
         return jsonResponse.get("text").getAsString();
     }
+
 
 
 
