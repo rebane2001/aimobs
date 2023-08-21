@@ -21,9 +21,11 @@ import com.google.gson.JsonParser;
 
 public class TextToSpeech {
     private static VoiceManager voiceManager = new VoiceManager("/voices.json");
+    
 
     // Synthesize and play text-to-speech for given text and mob UUID
     public static void synthesizeAndPlay(String gptResponseText, UUID mobUUID) {
+        System.out.println("TextToSpeech");
         Voice voice = voiceManager.getVoiceForMob(mobUUID);
         String payload = createPayload(gptResponseText, voice);
 
@@ -41,7 +43,6 @@ public class TextToSpeech {
 
                 // Extract the base64 audio content
                 String base64Audio = extractBase64Audio(responseString);
-
                 playSound(base64Audio);
             }
         } catch (Exception e) {

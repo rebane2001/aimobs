@@ -1,11 +1,15 @@
 package com.rebane2001.aimobs;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
+
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Type;
@@ -13,9 +17,31 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.io.IOException;
 import java.util.UUID;
 
 public class VoiceManager {
+
+    // Custom UUID type adapter for Gson
+    private static class UUIDTypeAdapter extends TypeAdapter<UUID> {
+        @Override
+        public void write(JsonWriter out, UUID value) throws IOException {
+            out.value(value != null ? value.toString() : null);
+        }
+
+        @Override
+        public UUID read(JsonReader in) throws IOException {
+            try {
+                return UUID.fromString(in.nextString());
+            } catch (IllegalArgumentException e) {
+                // Handle invalid UUID here if necessary
+                return null;
+            }
+        }
+    }
+
+
+
     private List<Voice> voices; // List of available voices
     private HashMap<UUID, Voice> mobVoices; // Map of mob UUIDs to their assigned voices
     private Random random; // Random generator for voice selection
@@ -40,7 +66,7 @@ public class VoiceManager {
     // Loads previously assigned mob voices from a JSON file
     private void loadMobVoices() {
         try (FileReader reader = new FileReader(MOB_VOICES_FILE_PATH)) {
-            Gson gson = new Gson();
+            Gson gson = new GsonBuilder().registerTypeAdapter(UUID.class, new UUIDTypeAdapter()).create();
             Type mobVoicesType = new TypeToken<HashMap<UUID, Voice>>() {}.getType();
             HashMap<UUID, Voice> loadedMobVoices = gson.fromJson(reader, mobVoicesType);
             mobVoices = loadedMobVoices != null ? loadedMobVoices : new HashMap<>();
