@@ -125,7 +125,7 @@ public class ActionHandler {
         } else {
             // Start a new conversation
             conversationsManager.startConversation(entityId);
-            String prompt = PromptManager.createPrompt(entity, player, entityName);
+            String prompt = PromptManager.createPrompt(entity, player);
             ItemStack heldItem = player.getMainHandStack();
             if (heldItem.getCount() > 0) {
                 prompt = "You are holding a " + heldItem.getName().getString() + " in your hand. " + prompt;

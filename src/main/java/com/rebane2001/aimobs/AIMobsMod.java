@@ -33,6 +33,7 @@ public class AIMobsMod implements ClientModInitializer {
         AIMobsConfig.loadConfig();
         KeyBindingHelper.registerKeyBinding(R_KEY_BINDING);
         conversationsManager.loadConversations();
+        MobPrompts.initializeMobStatsFile();
 
         ClientCommandRegistrationCallback.EVENT.register(AIMobsCommand::setupAIMobsCommand);
 
