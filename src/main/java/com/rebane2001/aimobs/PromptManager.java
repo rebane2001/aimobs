@@ -17,7 +17,8 @@ public class PromptManager {
         if (entity instanceof VillagerEntity villager) {
             String villageName = villager.getVillagerData().getType().toString().toLowerCase(Locale.ROOT) + " village";
             if (villager.isBaby()) {
-                prompt.append("You'll pretend to be a playful young kid from ").append(villageName);
+                entityName = "playfull kid";
+                prompt.append("You'll pretend to be a playfull kid from ").append(villageName);
             } else {
                 prompt.append("You'll pretend to be a villager from ").append(villageName).append(" working as ").append(entityName);
             }

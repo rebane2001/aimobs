@@ -79,27 +79,31 @@ public class ActionHandler {
             PlayerEntity player = MinecraftClient.getInstance().player;
             player.sendMessage(Text.of("Stopped listening."));
             System.out.println("R key released! Stopping voice input...");
-            // Check if the voice key is set in the configuration
-            if (AIMobsConfig.config.voiceApiKey.length() > 0) {
-                try {
-                    // Stop the recording and get the WAV input stream
-                    InputStream wavInputStream = audioRecorder.stopRecording();
 
-                    // Get the transcription from OpenAI's Whisper ASR
-                    String transcription = RequestHandler.getTranscription(wavInputStream);
-                    // You can now use the transcription in your conversation logic
-                    // For example, send it as a reply to the entity
-                    if (player != null) {
-                        replyToEntity(transcription, player);
+            // Create a new thread to handle the time-consuming tasks
+            new Thread(() -> {
+                // Check if the voice key is set in the configuration
+                if (AIMobsConfig.config.voiceApiKey.length() > 0) {
+                    try {
+                        // Stop the recording and get the WAV input stream
+                        InputStream wavInputStream = audioRecorder.stopRecording();
+
+                        // Get the transcription from OpenAI's Whisper ASR
+                        String transcription = RequestHandler.getTranscription(wavInputStream);
+                        // You can now use the transcription in your conversation logic
+                        // For example, send it as a reply to the entity
+                        if (player != null) {
+                            replyToEntity(transcription, player);
+                        }
+
+                    } catch (IOException e) {
+                        System.err.println("Error transcribing audio:");
+                        e.printStackTrace();
                     }
-
-                } catch (IOException e) {
-                    System.err.println("Error transcribing audio:");
-                    e.printStackTrace();
+                } else {
+                    System.err.println("Voice API key is not set. Please set it using /aimobs setvoicekey <voicekey>.");
                 }
-            } else {
-                System.err.println("Voice API key is not set. Please set it using /aimobs setvoicekey <voicekey>.");
-            }
+            }).start(); // Start the new thread
         }
     }
 
@@ -164,7 +168,7 @@ public class ActionHandler {
         }
         lastRequest = System.currentTimeMillis();
         // Set the time when the conversation should end (30 seconds from now)
-        conversationEndTime = lastRequest + 300000L;
+        conversationEndTime = lastRequest + 100000L;
         Thread t = new Thread(() -> {
             try {
                 String response = RequestHandler.getAIResponse(messages);
