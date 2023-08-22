@@ -30,7 +30,7 @@ public class EnvironmentPrompts {
         String translationKey = Util.createTranslationKey("biome", biomeKey.get().getValue());
         // Remove the prefix "biome.minecraft."
         String biomeName = translationKey.replace("biome.minecraft.", "");
-        return "The land around you breathes the essence of the " + biomeName + ". ";
+        return "The land around you breathes the essence of the " + biomeName + ". You call it home. ";
     }
 
     public static String lightLevelPrompt(Entity entity) {
@@ -45,7 +45,8 @@ public class EnvironmentPrompts {
     public static String blockStatePrompt(Entity entity) {
         BlockPos pos = entity.getBlockPos();
         BlockState blockState = entity.getEntityWorld().getBlockState(pos);
-        String blockName = blockState.getBlock().getTranslationKey().replace("biome.minecraft.", "");
+        String blockName = blockState.getBlock().getTranslationKey().replace("block.minecraft.", "");
+        if (blockName.equals("air")) return "";
         return "Beneath your feet, you feel the texture of " + blockName + ". ";
     }
 

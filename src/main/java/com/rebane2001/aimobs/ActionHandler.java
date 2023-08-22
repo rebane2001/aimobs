@@ -126,10 +126,6 @@ public class ActionHandler {
             // Start a new conversation
             conversationsManager.startConversation(entityId);
             String prompt = PromptManager.createPrompt(entity, player);
-            ItemStack heldItem = player.getMainHandStack();
-            if (heldItem.getCount() > 0) {
-                prompt = "You are holding a " + heldItem.getName().getString() + " in your hand. " + prompt;
-            }
             // Adding the player's message to the conversation
             conversationsManager.addMessageToConversation(entityId, "user", prompt);
             messages = new Message[] { new Message("user", prompt) }; // Initialize messages array
@@ -168,7 +164,7 @@ public class ActionHandler {
         }
         lastRequest = System.currentTimeMillis();
         // Set the time when the conversation should end (30 seconds from now)
-        conversationEndTime = lastRequest + 30000L;
+        conversationEndTime = lastRequest + 300000L;
         Thread t = new Thread(() -> {
             try {
                 String response = RequestHandler.getAIResponse(messages);

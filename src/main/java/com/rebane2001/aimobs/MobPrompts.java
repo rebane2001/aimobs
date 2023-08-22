@@ -64,8 +64,7 @@ public class MobPrompts {
         mobStats.setIntelligence((int) (Math.random() * 5));
         mobStats.setHappiness((int) (Math.random() * 5));
         mobStats.setHunger((int) (Math.random() * 5));
-        mobStats.setInLoveWithPlayer((int) (Math.random() * 5));
-        mobStats.setHatesPlayer((int) (Math.random() * 5));
+        mobStats.setLikesPlayer((int) (Math.random() * 5));
         mobStats.setIsAttractedByPlayer((int) (Math.random() * 5));
         // TODO: add age of mob
 
@@ -74,8 +73,8 @@ public class MobPrompts {
         };
 
         String[] languageBackgrounds = {
-            "gangster rap", "mafia", "stoned Hippies", "Redneck", "British nobility",
-            "pig farmers", "Wall-street", "red light milieu", "monastery", "K-Pop"
+            "gangster rappers", "mafia bosses", "stoned hippies", "Rednecks", "British nobility",
+            "pig farmers", "Wall-street sharks", "pimps and prostitutes", "monks", "K-Pop stars"
         };
         mobStats.setLanguageBackground(languageBackgrounds[(int) (Math.random() * languageBackgrounds.length)]);
         mobStats.setPersonality(personality[(int) (Math.random() * personality.length)]);
@@ -115,78 +114,69 @@ public class MobPrompts {
     // Mob Stats
     public static String intelligencePrompt(Entity entity) {
         int intelligence = getMobStats(entity.getUuid()).getIntelligence();
-        if (intelligence == 0) return "Its eyes seem vacant, displaying no sign of intelligence.";
-        if (intelligence == 1) return "It looks confused and struggles to understand simple things.";
-        if (intelligence == 2) return "It looks around curiously but seems limited in understanding.";
-        if (intelligence == 3) return "It observes its surroundings with moderate intelligence.";
-        return "Its eyes glint with wisdom, showing clear signs of intelligence.";
+        if (intelligence == 0) return "Your eyes seem vacant, displaying no sign of intelligence. ";
+        if (intelligence == 1) return "You look confused and struggle to understand simple things. ";
+        if (intelligence == 2) return "You look around curiously but seem limited in understanding. ";
+        if (intelligence == 3) return "You observe Your surroundings with moderate intelligence. ";
+        return "Your eyes glint with wisdom, showing clear signs of intelligence. ";
     }
 
     public static String happinessPrompt(Entity entity) {
         int happiness = getMobStats(entity.getUuid()).getHappiness();
-        if (happiness == 0) return "Its eyes are filled with sorrow and despair.";
-        if (happiness == 1) return "It looks sad and in need of comfort.";
-        if (happiness == 2) return "It looks content but not particularly joyful.";
-        if (happiness == 3) return "Its eyes sparkle with happiness.";
-        return "It seems ecstatic and full of joy.";
+        if (happiness == 0) return "Your eyes are filled with sorrow and despair ";
+        if (happiness == 1) return "You look sad and in need of comfort ";
+        if (happiness == 2) return "You look content but not particularly joyful ";
+        if (happiness == 3) return "Your eyes sparkle with happiness ";
+        return "You seem ecstatic and full of joy ";
     }
 
     public static String hungryPrompt(Entity entity) {
         int hunger = getMobStats(entity.getUuid()).getHunger();
-        if (hunger == 0) return "Its ribs are showing, and it looks starving.";
-        if (hunger == 1) return "It seems very hungry, searching for something to eat.";
-        if (hunger == 2) return "It appears hungry but not desperate for food.";
-        if (hunger == 3) return "It seems to have a slight appetite.";
-        return "Its belly looks full, and it seems satisfied with its last meal.";
+        if (hunger == 0) return "Your ribs are showing, and you look starving ";
+        if (hunger == 1) return "You seem very hungry, searching for something to eat ";
+        if (hunger == 2) return "You appear hungry but not desperate for food ";
+        if (hunger == 3) return "You seem to have a slight appetite ";
+        return "Your belly looks full, and you seem satisfied with your last meal ";
     }
 
-    public static String inLoveWithPlayerPrompt(Entity entity) {
-        int love = getMobStats(entity.getUuid()).getInLoveWithPlayer();
-        if (love == 0) return "It seems completely indifferent to your presence.";
-        if (love == 1) return "It looks at you with a very slight fondness.";
-        if (love == 2) return "It looks at you with a slight fondness.";
-        if (love == 3) return "It gazes at you warmly.";
-        return "It gazes at you lovingly, its eyes filled with affection.";
-    }
-
-    public static String hatesPlayerPrompt(Entity entity) {
-        int hate = getMobStats(entity.getUuid()).getHatesPlayer();
-        if (hate == 0) return "It seems completely indifferent to you.";
-        if (hate == 1) return "Its eyes narrow very slightly, showing a hint of dislike.";
-        if (hate == 2) return "Its eyes narrow slightly, displaying mild dislike.";
-        if (hate == 3) return "It glares at you, showing clear signs of dislike.";
-        return "Its eyes blaze with hatred towards you.";
+    public static String likesPlayerPrompt(Entity entity) {
+        int love = getMobStats(entity.getUuid()).getLikesPlayer();
+        if (love == 0) return "Your eyes blaze with hatred towards them. ";
+        if (love == 1) return "You glare at them, showing clear signs of dislike. ";
+        if (love == 2) return "You look at them with a slight fondness. ";
+        if (love == 3) return "You gaze at them warmly. ";
+        return "You gaze at the adventurers lovingly, your eyes filled with affection. ";
     }
 
     public static String isAttractedByPlayerPrompt(Entity entity) {
         int attraction = getMobStats(entity.getUuid()).getIsAttractedByPlayer();
-        if (attraction == 0) return "It doesn't seem to notice your physical presence at all.";
-        if (attraction == 1) return "It takes a quick glance at you but appears indifferent to your appearance.";
-        if (attraction == 2) return "It seems to take note of your physical appearance with a mild curiosity.";
-        if (attraction == 3) return "It frequently observes you, showing a clear interest in your physical appearance.";
-        return "It can't seem to take its eyes off you, obviously drawn to your physical presence.";
+        if (attraction == 0) return "You don't notice their physical presence at all. ";
+        if (attraction == 1) return "You take a quick glance at them but you are indifferent to their appearance. ";
+        if (attraction == 2) return "You take note of their physical appearance with a mild curiosity. ";
+        if (attraction == 3) return "You frequently observe them, showing a clear interest in their physical appearance. ";
+        return "You can't take your eyes off them, obviously drawn to their physical presence. ";
     }
 
     public static String personalityPrompt(Entity entity) {
         String personality = getMobStats(entity.getUuid()).getPersonality();
-        return "Its behavior reveals a " + personality + " personality. ";
+        return "and your behavior reveals a " + personality + " personality. ";
     }
 
     public static String languageBackgroundPrompt(Entity entity) {
         String languageBackground = getMobStats(entity.getUuid()).getLanguageBackground();
-        return "You can clearly hear that it comes from a " + languageBackground + " background.";
+        return "Your way of talking clearly reveals that you grew up among " + languageBackground + ". ";
     }
 
     // Mob Stat Methods (non random)
     public static String healthyPrompt(Entity entity) {
         float healthRatio = entity instanceof LivingEntity ? ((LivingEntity) entity).getHealth() / ((LivingEntity) entity).getMaxHealth() : 0;
-        return "Its physique appears " + (healthRatio > 0.5 ? "strong and vigorous" : "weak and frail") + ". ";
+        return "but your physique appears " + (healthRatio > 0.5 ? "strong and vigorous" : "weak and frail") + ". \n\n";
     }
 
     public static String reputationPrompt(VillagerEntity villager, PlayerEntity player) {
         int reputation = villager.getReputation(player);
         String reputationStatus = reputation > 5 ? "reputable" : reputation < -5 ? "shady" : "neutral";
-        return "Among the villagers, you are seen as " + reputationStatus + ", with a reputation score of " + reputation + ". ";
+        return "Among the other villagers, the adventurer is seen as " + reputationStatus +". ";
     }
 
     public static String improviseDialogue(Entity entity, String playerInput) {
@@ -207,16 +197,15 @@ public class MobPrompts {
     // Method to combine all mob-related prompts
     public static String createMobPrompt(Entity entity, PlayerEntity player) {
         StringBuilder prompt = new StringBuilder();
+        prompt.append(languageBackgroundPrompt(entity));      // Mob's language background
         prompt.append(intelligencePrompt(entity));            // Mob's intelligence
         prompt.append(happinessPrompt(entity));               // Mob's happiness
-        prompt.append(hungryPrompt(entity));                  // Mob's hunger
-        prompt.append(inLoveWithPlayerPrompt(entity));        // Mob's love towards player
-        prompt.append(hatesPlayerPrompt(entity));             // Mob's hate towards player
-        prompt.append(isAttractedByPlayerPrompt(entity));     // Mob's attraction towards player
         prompt.append(personalityPrompt(entity));             // Mob's personality
-        prompt.append(languageBackgroundPrompt(entity));      // Mob's language background
+        prompt.append(hungryPrompt(entity));                  // Mob's hunger
         prompt.append(healthyPrompt(entity));                 // Mob's health
-        if (entity instanceof VillagerEntity villager) {      // Mob's reputation if it's a villager
+        prompt.append(likesPlayerPrompt(entity));        // Mob's love or hates player
+        prompt.append(isAttractedByPlayerPrompt(entity));     // Mob's attraction towards player
+        if (entity instanceof VillagerEntity villager) {      // Players reputation if it's a villager
             prompt.append(reputationPrompt(villager, player));
         }
         return prompt.toString();
@@ -251,8 +240,7 @@ public class MobPrompts {
         private int intelligence;
         private int happiness;
         private int hunger;
-        private int inLoveWithPlayer;
-        private int hatesPlayer;
+        private int likesPlayer;
         private int isAttractedByPlayer;
         private String languageBackground;
         private String personality;
@@ -267,11 +255,8 @@ public class MobPrompts {
         public void setHunger(int hunger) {
             this.hunger = hunger;
         }
-        public void setInLoveWithPlayer(int inLoveWithPlayer) {
-            this.inLoveWithPlayer = inLoveWithPlayer;
-        }
-        public void setHatesPlayer(int hatesPlayer) {
-            this.hatesPlayer = hatesPlayer;
+        public void setLikesPlayer(int likesPlayer) {
+            this.likesPlayer = likesPlayer;
         }
         public void setIsAttractedByPlayer(int isAttractedByPlayer) {
             this.isAttractedByPlayer = isAttractedByPlayer;
@@ -293,11 +278,8 @@ public class MobPrompts {
         public int getHunger() {
             return hunger;
         }
-        public int getInLoveWithPlayer() {
-            return inLoveWithPlayer;
-        }
-        public int getHatesPlayer() {
-            return hatesPlayer;
+        public int getLikesPlayer() {
+            return likesPlayer;
         }
         public int getIsAttractedByPlayer() {
             return isAttractedByPlayer;
