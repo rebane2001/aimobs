@@ -11,12 +11,12 @@ public class PlayerPrompts {
 
     public static String healthPrompt(PlayerEntity player) {
         float healthRatio = player.getHealth() / player.getMaxHealth();
-        if (healthRatio == 1) return "They feel in peak condition. ";
-        if (healthRatio >= 0.8) return "They feel strong and healthy. ";
-        if (healthRatio >= 0.6) return "The adventurer feel good, with only minor scrapes. ";
-        if (healthRatio >= 0.4) return "The adventurer feel a bit battered and bruised. ";
-        if (healthRatio >= 0.2) return "The adventurer feel weak and wounded.";
-        return "Their health is on the brink of collapse. ";
+        if (healthRatio == 1) return "but in peak condition ";
+        if (healthRatio >= 0.8) return "but feels strong and healthy ";
+        if (healthRatio >= 0.6) return "but mostly healty, with only minor scrapes ";
+        if (healthRatio >= 0.4) return "but look a bit battered and bruised ";
+        if (healthRatio >= 0.2) return "but is weak and wounded ";
+        return "bud is on the brink of death. ";
     }
 
     public static String hungerPrompt(PlayerEntity player) {
@@ -31,17 +31,17 @@ public class PlayerPrompts {
 
     public static String experiencePrompt(PlayerEntity player) {
         int experienceLevel = player.experienceLevel;
-        if (experienceLevel >= 30) return "The adventurer is reached a high age and level of expertise. ";
-        if (experienceLevel >= 20) return "The adventurer is middle aged and quite skilled. ";
-        if (experienceLevel >= 10) return "The adventurer is of young age with moderate level of experience. ";
-        return "The adventurer is almost a child and just beginning their adventures. ";
+        if (experienceLevel >= 30) return "The adventurer has reached a high age and level of expertise, ";
+        if (experienceLevel >= 20) return "The adventurer is middle aged and quite skilled, ";
+        if (experienceLevel >= 10) return "The adventurer is of young age with moderate level of experience, ";
+        return "The adventurer looks young, at the beginning of their adventures, ";
     }
 
 
     public static String heldItemPrompt(PlayerEntity player) {
         ItemStack heldItem = player.getMainHandStack();
         if (heldItem.getCount() > 0) {
-            return "In their hand, they hold a " + heldItem.getName().getString() + ", ready for action. ";
+            return "In their hand, they hold a " + heldItem.getName().getString() + ", what for? ";
         }
         return "";
     }

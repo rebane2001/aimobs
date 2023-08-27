@@ -3,6 +3,7 @@ package com.rebane2001.aimobs;
 import com.rebane2001.aimobs.RequestHandler.Message;
 import java.util.Arrays;
 import com.rebane2001.aimobs.mixin.ChatHudAccessor;
+//import net.minecraft.nbt.NbtCompound;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ChatHudLine;
 import net.minecraft.entity.Entity;
@@ -17,6 +18,7 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
+import net.minecraft.util.math.Box;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import org.apache.commons.lang3.StringUtils;
@@ -25,18 +27,23 @@ import java.util.Optional;
 import java.util.UUID;
 import java.io.InputStream;
 import java.io.IOException;
-import net.minecraft.nbt.NbtCompound;
+import java.util.Random;
+import java.util.stream.Collectors;
+
 
 
 
 public class ActionHandler {
     public static Message[] messages = new Message[0]; // Replace prompts string with messages array
-    public static MobEntity currentEntity = null;
+    public static MobEntity currentMob = null;
     public static String entityName = "";
     public static UUID entityId = null;
     public static UUID initiator = null;
+    public static String currentPrompt = "";
     public static long lastRequest = 0;
+
     public static long conversationEndTime = 0; // Track when the conversation should end
+    public static boolean conversationOngoing = false;
     // ConversationsManager to manage all conversations with entities
     public static ConversationsManager conversationsManager = AIMobsMod.conversationsManager;
     // Field to track if the "R" key is being held down
@@ -77,7 +84,7 @@ public class ActionHandler {
         if (isRKeyPressed) {
             isRKeyPressed = false;
             PlayerEntity player = MinecraftClient.getInstance().player;
-            player.sendMessage(Text.of("Stopped listening."));
+            player.sendMessage(Text.of("..."));
             System.out.println("R key released! Stopping voice input...");
 
             // Create a new thread to handle the time-consuming tasks
@@ -107,32 +114,33 @@ public class ActionHandler {
         }
     }
 
-
     public static void startConversation(Entity entity, PlayerEntity player) {
         if (!(entity instanceof LivingEntity)) return;
         if (entity instanceof MobEntity) {
-            currentEntity = (MobEntity) entity; // Store the mob entity reference
+            currentMob = (MobEntity) entity; // Store the mob entity reference
         }
         entityId = entity.getUuid();
-        entityName = StringUtils.capitalize(entity.getType().getName().getString().replace("_", " "));
+        //entityName = StringUtils.capitalize(entity.getType().getName().getString().replace("_", " "));
+        entityName = entity.getName().getString();
         initiator = player.getUuid();
+        conversationOngoing = true;
         // Check if a conversation already exists for this mob
         if (conversationsManager.conversationExists(entityId)) {
             // Resume existing conversation
             Conversation existingConversation = conversationsManager.getConversation(entityId);
             messages = conversationsManager.getConversation(entityId).getMessages().toArray(new Message[0]);
-            String newPrompt = "Hi, I'm back. Nice to see you again."; // You would define this method to create the new prompt
-            conversationsManager.addMessageToConversation(entityId, "user", newPrompt); // Add the new user message to the conversation
+            currentPrompt = PromptManager.createFollowUpPrompt(entity, player);
+            conversationsManager.addMessageToConversation(entityId, "user", currentPrompt); // Add the new user message to the conversation
             messages = existingConversation.getMessages().toArray(new RequestHandler.Message[0]); // Update messages array
             showWaitMessage(entityName);
             getResponse(player);
         } else {
             // Start a new conversation
             conversationsManager.startConversation(entityId);
-            String prompt = PromptManager.createPrompt(entity, player);
+            currentPrompt = PromptManager.createInitialPrompt(entity, player);
             // Adding the player's message to the conversation
-            conversationsManager.addMessageToConversation(entityId, "user", prompt);
-            messages = new Message[] { new Message("user", prompt) }; // Initialize messages array
+            conversationsManager.addMessageToConversation(entityId, "user", currentPrompt);
+            messages = new Message[] { new Message("user", currentPrompt) }; // Initialize messages array
             showWaitMessage(entityName);
             getResponse(player);
         }
@@ -141,15 +149,17 @@ public class ActionHandler {
 
     public static boolean checkConversationEnd() {
         if (entityId != null && System.currentTimeMillis() > conversationEndTime) {
-            if (currentEntity != null) {
-                currentEntity.getNavigation().stop(); // Stop the mob's movement
+            if (currentMob != null) {
+                currentMob.getNavigation().stop(); // Stop the mob's movement
             }
             // End the conversation
-            currentEntity = null; // Reset the mob entity reference
+            conversationOngoing = false;
+            currentMob = null; // Reset the mob entity reference
             entityId = null;
             entityName = "";
             initiator = null;
             messages = new Message[0];
+            currentPrompt = "";
             conversationEndTime = 0;
             System.out.println("Conversation ended"); // Test message
             return true;
@@ -199,22 +209,25 @@ public class ActionHandler {
 
     public static void replyToEntity(String message, PlayerEntity player) {
         if (entityId == null) return;
-        String prompt = (player.getUuid() == initiator) ? "You say: \"" : ("Your friend " + player.getName().getString() + " says: \"");
-        prompt += message.replace("\"", "'") + "\"\n The " + entityName + " says: \"";
+        //String prompt = (player.getUuid() == initiator) ? "You say: \"" : ("Your friend " + player.getName().getString() + " says: \"");
+        //prompt += message.replace("\"", "'") + "\"\n The " + entityName + " says: \"";
 
         // Add user message to the conversation
         conversationsManager.addMessageToConversation(entityId, "user", message);
 
         // Add user message to messages array for displaying the conversation
         messages = Arrays.copyOf(messages, messages.length + 1);
-        messages[messages.length - 1] = new Message("user", prompt);
+        messages[messages.length - 1] = new Message("user", message);
 
         getResponse(player);
     }
 
-    public static void handlePunch(Entity entity, Entity players) {
-        if (entity.getUuid() != entityId) return;
+    public static void handlePunch(Entity entity, Entity player) {
+    if (entity.getUuid() != entityId) return;
+
+        // Add user message to the conversation
+        conversationsManager.addMessageToConversation(entityId, "user", "The adventurer punches you.");
         messages = Arrays.copyOf(messages, messages.length + 1);
-        messages[messages.length - 1] = new Message("user", "You punch the " + entityName + ".");
+        messages[messages.length - 1] = new Message("user", "The adventurer punches you.");
     }
 }

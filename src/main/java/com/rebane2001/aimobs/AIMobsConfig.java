@@ -15,7 +15,7 @@ public class AIMobsConfig {
         public String apiKey = ""; // OpenAI API key
         public String voiceApiKey = ""; // Voice API key (if applicable)
         public String model = "gpt-3.5-turbo-16k"; // Model to be used for conversation
-        public float temperature = 0.6f; // Model temperature setting
+        public float temperature = 0.3f; // Model temperature setting
     }
 
     public static Config config; // Config instance
