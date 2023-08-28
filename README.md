@@ -1,5 +1,5 @@
 # AIMobs-Voice
-AIMobs-Voice is a mod that lets you chat or talk (hold R key) with Minecraft mobs and other entities by creating prompts and using the OpenAI API.
+AIMobs-Voice is a mod that lets you chat or talk (hold R key) with Minecraft mobs and other entities by creating prompts and using the OpenAI API. It's forked from [AIMobs](https://github.com/rebane2001/aimobs) for text only interactions.
 
 ### Requirements
 - Minecraft 1.19.4
