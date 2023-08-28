@@ -21,6 +21,8 @@ repositories {
 }
 
 dependencies {
+	// needed for whisper ASR in RequestHandler
+	//implementation 'org.apache.httpcomponents:httpmime:4.5.13'
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
@@ -33,6 +35,7 @@ dependencies {
 	// These are included in the Fabric API production distribution and allow you to update your mod to the latest modules at a later more convenient time.
 
 	// modImplementation "net.fabricmc.fabric-api:fabric-api-deprecated:${project.fabric_version}"
+
 }
 
 processResources {

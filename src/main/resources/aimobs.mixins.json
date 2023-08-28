@@ -7,6 +7,9 @@
     "ChatHudAccessor",
     "ClientPlayNetworkHandler"
   ],
+  "mixins": [
+    "ServerTickMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   }

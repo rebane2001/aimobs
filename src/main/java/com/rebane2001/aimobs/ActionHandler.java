@@ -1,42 +1,63 @@
 package com.rebane2001.aimobs;
 
+import com.rebane2001.aimobs.RequestHandler.Message;
+import java.util.Arrays;
 import com.rebane2001.aimobs.mixin.ChatHudAccessor;
+//import net.minecraft.nbt.NbtCompound;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ChatHudLine;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
+import net.minecraft.util.math.Box;
 import net.minecraft.registry.RegistryKey;
-// import net.minecraft.world.EntityView;
 import net.minecraft.world.biome.Biome;
 import org.apache.commons.lang3.StringUtils;
-
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
+import java.io.InputStream;
+import java.io.IOException;
+import java.util.Random;
+import java.util.stream.Collectors;
+
+
+
 
 public class ActionHandler {
-    public static String prompts = "";
+    public static Message[] messages = new Message[0]; // Replace prompts string with messages array
+    public static MobEntity currentMob = null;
     public static String entityName = "";
-    public static int entityId = 0;
+    public static UUID entityId = null;
     public static UUID initiator = null;
+    public static String currentPrompt = "";
     public static long lastRequest = 0;
+
+    public static long conversationEndTime = 0; // Track when the conversation should end
+    public static boolean conversationOngoing = false;
+    // ConversationsManager to manage all conversations with entities
+    public static ConversationsManager conversationsManager = AIMobsMod.conversationsManager;
+    // Field to track if the "R" key is being held down
+    public static boolean isRKeyPressed = false;
+    // AudioRecorder to record audio from the microphone
+    private static AudioRecorder audioRecorder = new AudioRecorder();
 
     // The waitMessage is the thing that goes '<Name> ...' before an actual response is received
     private static ChatHudLine.Visible waitMessage;
     private static List<ChatHudLine.Visible> getChatHudMessages() {
         return ((ChatHudAccessor)MinecraftClient.getInstance().inGameHud.getChatHud()).getVisibleMessages();
     }
+
+    // Method to show the wait message
     private static void showWaitMessage(String name) {
         if (waitMessage != null) getChatHudMessages().remove(waitMessage);
         waitMessage = new ChatHudLine.Visible(MinecraftClient.getInstance().inGameHud.getTicks(), OrderedText.concat(OrderedText.styledForwardsVisitedString("<" + name + "> ", Style.EMPTY),OrderedText.styledForwardsVisitedString("...", Style.EMPTY.withColor(Formatting.GRAY))), null, true);
@@ -47,22 +68,106 @@ public class ActionHandler {
         waitMessage = null;
     }
 
-    private static String getBiome(Entity entity) {
-        Optional<RegistryKey<Biome>> biomeKey = entity.getEntityWorld().getBiomeAccess().getBiome(entity.getBlockPos()).getKey();
-        if (biomeKey.isEmpty()) return "place";
-        return I18n.translate(Util.createTranslationKey("biome", biomeKey.get().getValue()));
+    // Method to handle the "R" key press
+    public static void onRKeyPress() {
+        if (entityId != null && !isRKeyPressed) { // Check if a conversation has been started
+            isRKeyPressed = true;
+            PlayerEntity player = MinecraftClient.getInstance().player;
+            player.sendMessage(Text.of("Listening.."));
+            System.out.println("Recording started"); // Test message
+            audioRecorder.startRecording();
+        }
+    }
+
+    // Method to handle the "R" key release
+    public static void onRKeyRelease() {
+        if (isRKeyPressed) {
+            isRKeyPressed = false;
+            PlayerEntity player = MinecraftClient.getInstance().player;
+            player.sendMessage(Text.of("..."));
+            System.out.println("R key released! Stopping voice input...");
+
+            // Create a new thread to handle the time-consuming tasks
+            new Thread(() -> {
+                // Check if the voice key is set in the configuration
+                if (AIMobsConfig.config.voiceApiKey.length() > 0) {
+                    try {
+                        // Stop the recording and get the WAV input stream
+                        InputStream wavInputStream = audioRecorder.stopRecording();
+
+                        // Get the transcription from OpenAI's Whisper ASR
+                        String transcription = RequestHandler.getTranscription(wavInputStream);
+                        // You can now use the transcription in your conversation logic
+                        // For example, send it as a reply to the entity
+                        if (player != null) {
+                            replyToEntity(transcription, player);
+                        }
+
+                    } catch (IOException e) {
+                        System.err.println("Error transcribing audio:");
+                        e.printStackTrace();
+                    }
+                } else {
+                    System.err.println("Voice API key is not set. Please set it using /aimobs setvoicekey <voicekey>.");
+                }
+            }).start(); // Start the new thread
+        }
     }
 
     public static void startConversation(Entity entity, PlayerEntity player) {
-        entityId = entity.getId();
+        if (!(entity instanceof LivingEntity)) return;
+        if (entity instanceof MobEntity) {
+            currentMob = (MobEntity) entity; // Store the mob entity reference
+        }
+        entityId = entity.getUuid();
+        //entityName = StringUtils.capitalize(entity.getType().getName().getString().replace("_", " "));
+        entityName = entity.getName().getString();
         initiator = player.getUuid();
-        prompts = createPrompt(entity, player);
-        ItemStack heldItem = player.getMainHandStack();
-        if (heldItem.getCount() > 0)
-            prompts = "You are holding a " + heldItem.getName().getString() + " in your hand. " + prompts;
-        showWaitMessage(entityName);
-        getResponse(player);
+        conversationOngoing = true;
+        // Check if a conversation already exists for this mob
+        if (conversationsManager.conversationExists(entityId)) {
+            // Resume existing conversation
+            Conversation existingConversation = conversationsManager.getConversation(entityId);
+            messages = conversationsManager.getConversation(entityId).getMessages().toArray(new Message[0]);
+            currentPrompt = PromptManager.createFollowUpPrompt(entity, player);
+            conversationsManager.addMessageToConversation(entityId, "user", currentPrompt); // Add the new user message to the conversation
+            messages = existingConversation.getMessages().toArray(new RequestHandler.Message[0]); // Update messages array
+            showWaitMessage(entityName);
+            getResponse(player);
+        } else {
+            // Start a new conversation
+            conversationsManager.startConversation(entityId);
+            currentPrompt = PromptManager.createInitialPrompt(entity, player);
+            // Adding the player's message to the conversation
+            conversationsManager.addMessageToConversation(entityId, "user", currentPrompt);
+            messages = new Message[] { new Message("user", currentPrompt) }; // Initialize messages array
+            showWaitMessage(entityName);
+            getResponse(player);
+        }
     }
+
+
+    public static boolean checkConversationEnd() {
+        if (entityId != null && System.currentTimeMillis() > conversationEndTime) {
+            if (currentMob != null) {
+                currentMob.getNavigation().stop(); // Stop the mob's movement
+            }
+            // End the conversation
+            conversationOngoing = false;
+            currentMob = null; // Reset the mob entity reference
+            entityId = null;
+            entityName = "";
+            initiator = null;
+            messages = new Message[0];
+            currentPrompt = "";
+            conversationEndTime = 0;
+            System.out.println("Conversation ended"); // Test message
+            return true;
+        }
+        return false;
+    }
+
+
 
     public static void getResponse(PlayerEntity player) {
         // 1.5 second cooldown between requests
@@ -72,11 +177,26 @@ public class ActionHandler {
             return;
         }
         lastRequest = System.currentTimeMillis();
+        // Set the time when the conversation should end (30 seconds from now)
+        conversationEndTime = lastRequest + 100000L;
         Thread t = new Thread(() -> {
             try {
-                String response = RequestHandler.getAIResponse(prompts);
+                String response = RequestHandler.getAIResponse(messages);
                 player.sendMessage(Text.of("<" + entityName + "> " + response));
-                prompts += response + "\"\n";
+                
+                // Adding the AI's response to the conversation
+                conversationsManager.addMessageToConversation(entityId, "assistant", response);
+
+                // Add response to messages array
+                messages = Arrays.copyOf(messages, messages.length + 1);
+                messages[messages.length - 1] = new Message("assistant", response);
+                conversationsManager.updateMessages(entityId, messages);
+
+                // Trigger text-to-speech synthesis and playback
+                if (AIMobsConfig.config.enabled && AIMobsConfig.config.voiceApiKey.length() > 0) { // Check if the feature is enabled
+                    TextToSpeech.synthesizeAndPlay(response, entityId); // Pass the mob's UUID to the TTS method
+                }
+
             } catch (Exception e) {
                 player.sendMessage(Text.of("[AIMobs] Error getting response"));
                 e.printStackTrace();
@@ -88,55 +208,26 @@ public class ActionHandler {
     }
 
     public static void replyToEntity(String message, PlayerEntity player) {
-        if (entityId == 0) return;
-        prompts += (player.getUuid() == initiator) ? "You say: \"" : ("Your friend " + player.getName().getString() + " says: \"");
-        prompts += message.replace("\"", "'") + "\"\n The " + entityName + " says: \"";
+        if (entityId == null) return;
+        //String prompt = (player.getUuid() == initiator) ? "You say: \"" : ("Your friend " + player.getName().getString() + " says: \"");
+        //prompt += message.replace("\"", "'") + "\"\n The " + entityName + " says: \"";
+
+        // Add user message to the conversation
+        conversationsManager.addMessageToConversation(entityId, "user", message);
+
+        // Add user message to messages array for displaying the conversation
+        messages = Arrays.copyOf(messages, messages.length + 1);
+        messages[messages.length - 1] = new Message("user", message);
+
         getResponse(player);
     }
 
-    private static boolean isEntityHurt(LivingEntity entity) {
-        return entity.getHealth() * 1.2 < entity.getAttributeValue(EntityAttributes.GENERIC_MAX_HEALTH);
-    }
-
-    private static String createPromptVillager(VillagerEntity villager, PlayerEntity player) {
-        boolean isHurt = isEntityHurt(villager);
-        entityName = "Villager";
-        String villageName = villager.getVillagerData().getType().toString().toLowerCase(Locale.ROOT) + " village";
-        int rep = villager.getReputation(player);
-        if (rep < -5) villageName = villageName + " that sees you as horrible";
-        if (rep > 5) villageName = villageName + " that sees you as reputable";
-        if (villager.isBaby()) {
-            entityName = "Villager Kid";
-            return String.format("You see a kid in a %s. The kid shouts: \"", villageName);
-        }
-        String profession = StringUtils.capitalize(villager.getVillagerData().getProfession().toString().toLowerCase(Locale.ROOT).replace("none", "freelancer"));
-        entityName = profession;
-        if (villager.getVillagerData().getLevel() >= 3) profession = "skilled " + profession;
-        if (isHurt) profession = "hurt " + profession;
-        return String.format("You meet a %s in a %s. The villager says to you: \"", profession, villageName);
-    }
-
-    public static String createPromptLiving(LivingEntity entity) {
-        boolean isHurt = isEntityHurt(entity);
-        String baseName = entity.getName().getString();
-        String name = baseName;
-        Text customName = entity.getCustomName();
-        if (customName != null)
-            name = baseName + " called " + customName.getString();
-        entityName = baseName;
-        if (isHurt) name = "hurt " + name;
-        return String.format("You meet a talking %s in the %s. The %s says to you: \"", name, getBiome(entity), baseName);
-    }
-
-    public static String createPrompt(Entity entity, PlayerEntity player) {
-        if (entity instanceof VillagerEntity villager) return createPromptVillager(villager, player);
-        if (entity instanceof LivingEntity entityLiving) return createPromptLiving(entityLiving);
-        entityName = entity.getName().getString();
-        return "You see a " + entityName + ". The " + entityName + " says: \"";
-    }
-
     public static void handlePunch(Entity entity, Entity player) {
-        if (entity.getId() != entityId) return;
-        prompts += ((player.getUuid() == initiator) ? "You punch" : (player.getName().getString() + " punches")) + " the " + entityName + ".\n";
+    if (entity.getUuid() != entityId) return;
+
+        // Add user message to the conversation
+        conversationsManager.addMessageToConversation(entityId, "user", "The adventurer punches you.");
+        messages = Arrays.copyOf(messages, messages.length + 1);
+        messages[messages.length - 1] = new Message("user", "The adventurer punches you.");
     }
 }
