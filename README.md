@@ -37,5 +37,7 @@ This project was initially made in 1.12 as a client Forge mod, then ported to 1.
 - [ ] Support for the Forge modloader.
 - [ ] Support for other AI APIs.
 
+Come join the project and add new features or for refined mob prompt engineering. Feel free to contact me on [Twitter/X](https://twitter.com/J_Grenzebach)
+
 
 The icon used is the **🧠** emoji from [Twemoji](https://twemoji.twitter.com/) (CC BY 4.0)
