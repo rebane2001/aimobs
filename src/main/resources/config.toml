@@ -1,0 +1,7 @@
+[version]
+    version = "v1.0"
+
+[chat-with-npc]
+    enabled=true
+
+
