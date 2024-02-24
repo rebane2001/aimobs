@@ -31,6 +31,9 @@ public class SettingManager {
     public static float temperature = 0.6f;
 
 
+    /**
+     * Load the setting from the config file.
+     */
     public static void loadConfig(){
         if (configFile.exists()) {
             try {
@@ -52,6 +55,9 @@ public class SettingManager {
         }
     }
 
+    /**
+     * Write the setting to the config file.
+     */
     public static void write() {
         try {
             if (!configFile.exists()) {

@@ -1,5 +1,6 @@
 package com.jackdaw.chatwithnpc.data;
 
+import com.jackdaw.chatwithnpc.ChatWithNPCMod;
 import com.jackdaw.chatwithnpc.auxiliary.yaml.YamlMethods;
 import com.jackdaw.chatwithnpc.auxiliary.yaml.YamlUtils;
 import com.jackdaw.chatwithnpc.npc.NPCEntity;
@@ -8,6 +9,8 @@ import org.slf4j.Logger;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -17,17 +20,16 @@ import java.util.HashMap;
  *
  * <p>Read or Write the data file with some information, each file just record one relative information.</p>
  */
-public class DataManager implements YamlMethods, StorageInterface {
+public class NPCDataManager implements YamlMethods{
 
-    private final Logger logger;
+    private static final Logger logger = ChatWithNPCMod.LOGGER;
     private final File theFile;
 
     private final NPCEntity npc;
 
-    public DataManager(File workingDirectory, Logger logger, NPCEntity npc) {
-        this.logger = logger;
+    public NPCDataManager(NPCEntity npc) {
         this.npc = npc;
-        this.theFile = new File(workingDirectory, "npc" + npc.getName() + ".yml");
+        this.theFile = new File(ChatWithNPCMod.workingDirectory.toFile(), "npc" + npc.getName() + ".yml");
     }
 
     @Override
@@ -41,7 +43,7 @@ public class DataManager implements YamlMethods, StorageInterface {
             npc.setCareer((String) data.get("careers"));
             npc.setLocalGroup((String) data.get("localGroup"));
             npc.setBasicPrompt((String) data.get("basicPrompt"));
-            npc.setLastMessageTime((long) data.get("lastMessageTime"));
+            npc.updateLastMessageTime((long) data.get("lastMessageTime"));
             // 在data中读取存在history中的数据，其中key为时间，value为消息
             HashMap messageRecord = (HashMap) data.get("history");
             for (Object key : messageRecord.keySet()) {
@@ -75,7 +77,7 @@ public class DataManager implements YamlMethods, StorageInterface {
             }
             YamlUtils.writeFile(theFile, data);
         } catch (IOException e) {
-            this.logger.error("Can't write the data file.");
+            logger.error("Can't write the data file.");
         }
     }
 
@@ -85,7 +87,7 @@ public class DataManager implements YamlMethods, StorageInterface {
             return;
         }
         if (!theFile.delete()) {
-            this.logger.error("Can't delete the data file.");
+            logger.error("Can't delete the data file.");
         }
     }
 }

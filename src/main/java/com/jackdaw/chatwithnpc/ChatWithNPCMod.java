@@ -1,6 +1,6 @@
 package com.jackdaw.chatwithnpc;
 
-import com.jackdaw.chatwithnpc.auxiliary.command.AIMobsCommand;
+import com.jackdaw.chatwithnpc.auxiliary.command.CommandSet;
 import com.jackdaw.chatwithnpc.auxiliary.configuration.SettingManager;
 import com.jackdaw.chatwithnpc.npc.ActionHandler;
 import net.fabricmc.api.ClientModInitializer;
@@ -32,14 +32,10 @@ public class ChatWithNPCMod implements ClientModInitializer {
             }
         }
         SettingManager.loadConfig();
-        ClientCommandRegistrationCallback.EVENT.register(AIMobsCommand::setupAIMobsCommand);
+        ClientCommandRegistrationCallback.EVENT.register(CommandSet::setupAIMobsCommand);
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
             if (!SettingManager.enabled) return ActionResult.PASS;
-            if (!player.isSneaking()) {
-                if (entity.getId() == ActionHandler.entityId)
-                    ActionHandler.handlePunch(entity, player);
-                return ActionResult.PASS;
-            }
+            if (!player.isSneaking()) {return ActionResult.PASS;}
             ActionHandler.startConversation(entity, player);
             return ActionResult.FAIL;
         });

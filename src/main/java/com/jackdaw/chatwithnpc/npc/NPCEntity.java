@@ -1,11 +1,9 @@
 package com.jackdaw.chatwithnpc.npc;
 
-import com.jackdaw.chatwithnpc.data.DataManager;
+import com.jackdaw.chatwithnpc.data.NPCDataManager;
 import net.minecraft.entity.Entity;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
 
-import java.io.File;
 import java.util.TreeMap;
 import java.util.UUID;
 
@@ -19,7 +17,9 @@ import java.util.UUID;
  *
  * @version 1.0
  */
-public abstract class NPCEntity {
+public abstract class NPCEntity implements NPCHandler {
+
+    protected Entity entity;
     protected final String name;
 
     protected final UUID uuid;
@@ -28,8 +28,6 @@ public abstract class NPCEntity {
     protected String localGroup = "";
 
     protected long lastMessageTime = 0L;
-
-    protected boolean isTalking = false;
 
     protected final TreeMap<Long, String> messageRecord = new TreeMap<>();
 
@@ -40,19 +38,8 @@ public abstract class NPCEntity {
     public NPCEntity(@NotNull Entity entity) {
         this.name = entity.getName().getString();
         this.uuid = entity.getUuid();
+        this.entity = entity;
     }
-
-    /**
-     * 操作该NPC回复玩家信息。
-     * @param message 该NPC应该回复玩家的消息。
-     */
-    public abstract void replyMessage(String message);
-
-    /**
-     * 操作该NPC执行动作。
-     * @param action 该NPC应该回应玩家的动作。
-     */
-    public abstract void doAction(Actions action);
 
     /**
      * 获取NPC的名字，该名字应该作为该NPC在本插件中的唯一标识，并将作为储存的文件名。
@@ -111,14 +98,6 @@ public abstract class NPCEntity {
     }
 
     /**
-     * 获取NPC的对话状态，该状态应该用于判断NPC是否正在与玩家对话。
-     * @return NPC的对话状态
-     */
-    public boolean getIsTalking() {
-        return this.isTalking;
-    }
-
-    /**
      * 设置NPC的职业，该职业应该作为该NPC的特征之一。
      * @param career NPC的职业
      */
@@ -146,7 +125,7 @@ public abstract class NPCEntity {
      * 设置NPC的最后一次消息时间，随着时间的退役该NPC会逐渐遗忘他讲过的内容。
      * @param lastMessageTime NPC的最后一次消息时间
      */
-    public void setLastMessageTime(long lastMessageTime) {
+    public void updateLastMessageTime(long lastMessageTime) {
         this.lastMessageTime = lastMessageTime;
     }
 
@@ -168,20 +147,10 @@ public abstract class NPCEntity {
     }
 
     /**
-     * 设置NPC的对话状态，该状态应该用于判断NPC是否正在与玩家对话。
-     * @param isTalking NPC的对话状态
-     */
-    public void setIsTalking(boolean isTalking) {
-        this.isTalking = isTalking;
-    }
-
-    /**
      * 获取NPC的数据管理器，该管理器应该用于管理NPC的数据。
-     * @param workingDirectory 工作目录
-     * @param logger 日志记录器
      * @return NPC的数据管理器
      */
-    public DataManager getDataManager(File workingDirectory, Logger logger) {
-        return new DataManager(workingDirectory, logger, this);
+    public NPCDataManager getDataManager() {
+        return new NPCDataManager(this);
     }
 }

@@ -1,5 +1,6 @@
 package com.jackdaw.chatwithnpc.npc;
 
+import com.jackdaw.chatwithnpc.ChatWithNPCMod;
 import com.jackdaw.chatwithnpc.api.RequestHandler;
 import com.jackdaw.chatwithnpc.auxiliary.configuration.SettingManager;
 import com.jackdaw.chatwithnpc.mixin.ChatHudAccessor;
@@ -70,7 +71,7 @@ public class ActionHandler {
         // 1.5 second cooldown between requests
         if (lastRequest + 1500L > System.currentTimeMillis()) return;
         if (SettingManager.apiKey.isEmpty()) {
-            player.sendMessage(Text.of("[chat-with-npc] You have not set an API key! Get one from https://beta.openai.com/account/api-keys and set it with /chat-with-npc setkey"));
+            player.sendMessage(Text.of("You have not set an API key! Get one from https://beta.openai.com/account/api-keys and set it with /chat-with-npc setkey"));
             return;
         }
         lastRequest = System.currentTimeMillis();
@@ -80,8 +81,8 @@ public class ActionHandler {
                 player.sendMessage(Text.of("<" + entityName + "> " + response));
                 prompts += response + "\"\n";
             } catch (Exception e) {
-                player.sendMessage(Text.of("[chat-with-npc] Error getting response"));
-                e.printStackTrace();
+                player.sendMessage(Text.of("Error getting response"));
+                ChatWithNPCMod.LOGGER.error(e.getMessage());
             } finally {
                 hideWaitMessage();
             }
@@ -135,10 +136,5 @@ public class ActionHandler {
         if (entity instanceof LivingEntity entityLiving) return createPromptLiving(entityLiving);
         entityName = entity.getName().getString();
         return "You see a " + entityName + ". The " + entityName + " says: \"";
-    }
-
-    public static void handlePunch(Entity entity, Entity player) {
-        if (entity.getId() != entityId) return;
-        prompts += ((player.getUuid() == initiator) ? "You punch" : (player.getName().getString() + " punches")) + " the " + entityName + ".\n";
     }
 }
