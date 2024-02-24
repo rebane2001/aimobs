@@ -1,4 +1,4 @@
-package com.rebane2001.aimobs;
+package com.jackdaw.chatwithnpc.auxiliary.configuration;
 
 import com.google.gson.Gson;
 import net.fabricmc.loader.api.FabricLoader;

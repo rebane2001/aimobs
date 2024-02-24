@@ -1,4 +1,4 @@
-package com.jackdaw.chatWithNPC.mixin;
+package com.jackdaw.chatwithnpc.mixin;
 
 import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.client.gui.hud.ChatHudLine;

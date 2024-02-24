@@ -1,9 +1,10 @@
-package com.rebane2001.aimobs;
+package com.jackdaw.chatwithnpc.auxiliary.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import com.jackdaw.chatwithnpc.auxiliary.configuration.AIMobsConfig;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.text.Text;

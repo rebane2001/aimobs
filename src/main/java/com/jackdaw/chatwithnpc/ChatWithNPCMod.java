@@ -1,8 +1,8 @@
-package com.jackdaw.chatWithNPC;
+package com.jackdaw.chatwithnpc;
 
-import com.rebane2001.aimobs.AIMobsCommand;
-import com.rebane2001.aimobs.AIMobsConfig;
-import com.rebane2001.aimobs.ActionHandler;
+import com.jackdaw.chatwithnpc.auxiliary.command.AIMobsCommand;
+import com.jackdaw.chatwithnpc.auxiliary.configuration.AIMobsConfig;
+import com.jackdaw.chatwithnpc.npc.ActionHandler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;

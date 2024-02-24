@@ -1,7 +1,8 @@
-package com.rebane2001.aimobs;
+package com.jackdaw.chatwithnpc.api;
 
 import com.google.gson.Gson;
-import com.jackdaw.chatWithNPC.ChatWithNPCMod;
+import com.jackdaw.chatwithnpc.ChatWithNPCMod;
+import com.jackdaw.chatwithnpc.auxiliary.configuration.AIMobsConfig;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;

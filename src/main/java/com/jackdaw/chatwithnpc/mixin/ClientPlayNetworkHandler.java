@@ -1,7 +1,7 @@
-package com.jackdaw.chatWithNPC.mixin;
+package com.jackdaw.chatwithnpc.mixin;
 
-import com.rebane2001.aimobs.AIMobsConfig;
-import com.rebane2001.aimobs.ActionHandler;
+import com.jackdaw.chatwithnpc.auxiliary.configuration.AIMobsConfig;
+import com.jackdaw.chatwithnpc.npc.ActionHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;

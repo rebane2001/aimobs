@@ -1,6 +1,8 @@
-package com.rebane2001.aimobs;
+package com.jackdaw.chatwithnpc.npc;
 
-import com.jackdaw.chatWithNPC.mixin.ChatHudAccessor;
+import com.jackdaw.chatwithnpc.api.RequestHandler;
+import com.jackdaw.chatwithnpc.auxiliary.configuration.AIMobsConfig;
+import com.jackdaw.chatwithnpc.mixin.ChatHudAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ChatHudLine;
 import net.minecraft.client.resource.language.I18n;
