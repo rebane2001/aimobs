@@ -1,6 +1,6 @@
 package com.rebane2001.aimobs;
 
-import com.rebane2001.aimobs.mixin.ChatHudAccessor;
+import com.jackdaw.chatWithNPC.mixin.ChatHudAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ChatHudLine;
 import net.minecraft.client.resource.language.I18n;
@@ -67,8 +67,8 @@ public class ActionHandler {
     public static void getResponse(PlayerEntity player) {
         // 1.5 second cooldown between requests
         if (lastRequest + 1500L > System.currentTimeMillis()) return;
-        if (AIMobsConfig.config.apiKey.length() == 0) {
-            player.sendMessage(Text.of("[AIMobs] You have not set an API key! Get one from https://beta.openai.com/account/api-keys and set it with /aimobs setkey"));
+        if (AIMobsConfig.config.apiKey.isEmpty()) {
+            player.sendMessage(Text.of("[chat-with-npc] You have not set an API key! Get one from https://beta.openai.com/account/api-keys and set it with /chat-with-npc setkey"));
             return;
         }
         lastRequest = System.currentTimeMillis();
@@ -78,7 +78,7 @@ public class ActionHandler {
                 player.sendMessage(Text.of("<" + entityName + "> " + response));
                 prompts += response + "\"\n";
             } catch (Exception e) {
-                player.sendMessage(Text.of("[AIMobs] Error getting response"));
+                player.sendMessage(Text.of("[chat-with-npc] Error getting response"));
                 e.printStackTrace();
             } finally {
                 hideWaitMessage();

@@ -1,4 +1,4 @@
-package com.rebane2001.aimobs.mixin;
+package com.jackdaw.chatWithNPC.mixin;
 
 import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.client.gui.hud.ChatHudLine;

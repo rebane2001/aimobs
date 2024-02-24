@@ -15,7 +15,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.arg
 public class AIMobsCommand {
 
     public static void setupAIMobsCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
-        dispatcher.register(literal("aimobs")
+        dispatcher.register(literal("chat-with-npc")
                 .executes(AIMobsCommand::status)
                 .then(literal("help").executes(AIMobsCommand::help))
                 .then(literal("setkey")
@@ -52,7 +52,7 @@ public class AIMobsCommand {
                 .append("\nAPI Key: ").append(hasKey ? yes : no)
                 .append("\nModel: ").append(AIMobsConfig.config.model)
                 .append("\nTemp: ").append(String.valueOf(AIMobsConfig.config.temperature))
-                .append("\n\nUse ").append(Text.literal("/aimobs help").formatted(Formatting.GRAY)).append(" for help");
+                .append("\n\nUse ").append(Text.literal("/chat-with-npc help").formatted(Formatting.GRAY)).append(" for help");
         context.getSource().sendFeedback(helpText);
         return 1;
     }
@@ -61,12 +61,12 @@ public class AIMobsCommand {
         Text helpText = Text.literal("")
                 .append("AIMobs Commands").formatted(Formatting.UNDERLINE)
                 .append("").formatted(Formatting.RESET)
-                .append("\n/aimobs - View configuration status")
-                .append("\n/aimobs help - View commands help")
-                .append("\n/aimobs enable/disable - Enable/disable the mod")
-                .append("\n/aimobs setkey <key> - Set OpenAI API key")
-                .append("\n/aimobs setmodel <model> - Set AI model")
-                .append("\n/aimobs settemp <temperature> - Set model temperature")
+                .append("\n/chat-with-npc - View configuration status")
+                .append("\n/chat-with-npc help - View commands help")
+                .append("\n/chat-with-npc enable/disable - Enable/disable the mod")
+                .append("\n/chat-with-npc setkey <key> - Set OpenAI API key")
+                .append("\n/chat-with-npc setmodel <model> - Set AI model")
+                .append("\n/chat-with-npc settemp <temperature> - Set model temperature")
                 .append("\nYou can talk to mobs by shift-clicking on them!");
         context.getSource().sendFeedback(helpText);
         return 1;

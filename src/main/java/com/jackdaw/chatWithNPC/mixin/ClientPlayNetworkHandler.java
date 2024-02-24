@@ -1,4 +1,4 @@
-package com.rebane2001.aimobs.mixin;
+package com.jackdaw.chatWithNPC.mixin;
 
 import com.rebane2001.aimobs.AIMobsConfig;
 import com.rebane2001.aimobs.ActionHandler;

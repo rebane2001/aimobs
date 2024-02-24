@@ -1,6 +1,7 @@
 package com.rebane2001.aimobs;
 
 import com.google.gson.Gson;
+import com.jackdaw.chatWithNPC.ChatWithNPCMod;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -37,7 +38,7 @@ public class RequestHandler {
 
     public static String getAIResponse(String prompt) throws IOException {
         if (prompt.length() > 4096) prompt = prompt.substring(prompt.length() - 4096);
-        AIMobsMod.LOGGER.info("Prompt: " + prompt);
+        ChatWithNPCMod.LOGGER.info("Prompt: " + prompt);
 
         OpenAIRequest openAIRequest = new OpenAIRequest(prompt, AIMobsConfig.config.model, AIMobsConfig.config.temperature);
         String data = new Gson().toJson(openAIRequest);

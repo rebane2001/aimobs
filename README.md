@@ -1,10 +1,21 @@
-# AIMobs
-AIMobs is a mod that lets you chat with Minecraft mobs and other entities by creating prompts and using the OpenAI API.
+# Chat-with-NPC
+Chat-with-NPC allow players to interact and talk to specific entities under specific prompts (for use in RPG maps).
+
+This mode is a fork of [AIMobs](https://github.com/rebane2001/aimobs) by [rebane2001](https://github.com/rebane2001) and [Eianex](https://github.com/Eianex).
+
+AIMobs is a mod that lets you chat with Minecraft mobs and other entities by creating prompts and using the OpenAI API. This mod has the following changes:
+
+- The mod is now a server-side mod, so it can be used in multiplayer servers.
+- ...... (to be continued)
 
 ### Requirements
-- Minecraft 1.19.4
+- Minecraft 1.19.*
 - Fabric
 - Fabric API
+
+**The mod is still being modified.** The information below is from the original README.md file of AIMobs.
+
+---
 
 ### Usage
 After installing the mod, grab your OpenAI API key from [here](https://beta.openai.com/account/api-keys), and set it with the `/aimobs setkey <key>` command.

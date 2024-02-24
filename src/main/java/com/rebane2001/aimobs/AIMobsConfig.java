@@ -18,7 +18,7 @@ public class AIMobsConfig {
     public static Config config;
 
     private static Path getConfigPath() {
-        return FabricLoader.getInstance().getConfigDir().resolve("aimobs.json");
+        return FabricLoader.getInstance().getConfigDir().resolve("chat-with-npc.json");
     }
 
     public static void loadConfig() {

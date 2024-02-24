@@ -1,29 +1,30 @@
 {
   "schemaVersion": 1,
-  "id": "aimobs",
+  "id": "chat-with-npc",
   "version": "${version}",
 
-  "name": "AIMobs",
-  "description": "Chat with Minecraft mobs and entities by using the OpenAI API",
+  "name": "ChatWithNPC",
+  "description": "Fork from rebane2001/aimobs. Chat with Minecraft mobs and entities by using the OpenAI API. The repository plans to modify the mod to allow players to interact and talk to specific entities under specific prompts (for use in RPG maps).",
   "authors": [
-    "rebane2001"
+    "rebane2001",
+    "WDRshadow"
   ],
   "contact": {
-    "homepage": "https://github.com/rebane2001/aimobs",
-    "sources": "https://github.com/rebane2001/aimobs"
+    "homepage": "https://github.com/Team-Jackdaw/chat-with-NPC",
+    "sources": "https://github.com/Team-Jackdaw/chat-with-NPC"
   },
 
   "license": "LGPL-3.0",
-  "icon": "assets/aimobs/icon.png",
+  "icon": "assets/chat-with-npc/icon.png",
 
   "environment": "client",
   "entrypoints": {
     "client": [
-      "com.rebane2001.aimobs.AIMobsMod"
+      "com.jackdaw.chatWithNPC.ChatWithNPCMod"
     ]
   },
   "mixins": [
-    "aimobs.mixins.json"
+    "chat-with-npc.mixins.json"
   ],
 
   "depends": {
