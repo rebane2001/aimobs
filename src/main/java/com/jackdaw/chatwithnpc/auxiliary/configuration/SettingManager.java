@@ -26,6 +26,8 @@ public class SettingManager {
     private static final String lastVersion = "v1.0";
 
     public static boolean enabled = true;
+
+    public static String language = "zh";
     public static String apiKey = "";
     public static String model = "text-davinci-003";
     public static float temperature = 0.6f;
@@ -44,6 +46,7 @@ public class SettingManager {
                     write();
                 }
                 SettingManager.enabled = (boolean) data.get("enabled");
+                SettingManager.language = (String) data.get("language");
                 SettingManager.apiKey = (String) data.get("apiKey");
                 SettingManager.model = (String) data.get("model");
                 SettingManager.temperature = (float) data.get("temperature");
@@ -69,6 +72,7 @@ public class SettingManager {
             HashMap data = new HashMap();
             data.put("version", lastVersion);
             data.put("enabled", SettingManager.enabled);
+            data.put("language", SettingManager.language);
             data.put("apiKey", SettingManager.apiKey);
             data.put("model", SettingManager.model);
             data.put("temperature", SettingManager.temperature);

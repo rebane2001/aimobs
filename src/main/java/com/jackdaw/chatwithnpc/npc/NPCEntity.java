@@ -22,6 +22,8 @@ public abstract class NPCEntity implements NPCHandler {
     protected Entity entity;
     protected final String name;
 
+    protected final String type;
+
     protected final UUID uuid;
     protected String career = "";
     protected String basicPrompt = "";
@@ -36,7 +38,11 @@ public abstract class NPCEntity implements NPCHandler {
      * @param entity The entity of the NPC.
      */
     public NPCEntity(@NotNull Entity entity) {
-        this.name = entity.getName().getString();
+        if (entity.getCustomName() == null) {
+            throw new IllegalArgumentException("The entity must have a custom name.");
+        }
+        this.name = entity.getCustomName().getString();
+        this.type = entity.getName().getString();
         this.uuid = entity.getUuid();
         this.entity = entity;
     }
@@ -47,6 +53,14 @@ public abstract class NPCEntity implements NPCHandler {
      */
     public String getName() {
         return this.name;
+    }
+
+    /**
+     * 获取NPC的类型，该类型应该作为该NPC的特征之一。
+     * @return NPC的类型
+     */
+    public String getType() {
+        return this.type;
     }
 
     /**

@@ -16,7 +16,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.arg
 
 public class CommandSet {
 
-    public static void setupAIMobsCommand(@NotNull CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
+    public static void setupCommand(@NotNull CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
         dispatcher.register(literal("npchat")
                 .executes(CommandSet::status)
                 .then(literal("help").executes(CommandSet::help))

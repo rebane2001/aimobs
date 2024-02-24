@@ -1,19 +1,18 @@
 package com.jackdaw.chatwithnpc.npc;
 
-import net.minecraft.entity.passive.VillagerEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.TreeMap;
 
-public class VillagerNPCEntity extends NPCEntity {
-
+public class LivingNPCEntity extends NPCEntity{
     /**
      * This is a constructor used to initialize the NPC with the entity.
      *
      * @param entity The entity of the NPC.
      */
-    public VillagerNPCEntity(@NotNull VillagerEntity entity) {
+    public LivingNPCEntity(@NotNull LivingEntity entity) {
         super(entity);
     }
 

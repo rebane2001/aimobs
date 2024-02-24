@@ -32,7 +32,7 @@ public class ChatWithNPCMod implements ClientModInitializer {
             }
         }
         SettingManager.loadConfig();
-        ClientCommandRegistrationCallback.EVENT.register(CommandSet::setupAIMobsCommand);
+        ClientCommandRegistrationCallback.EVENT.register(CommandSet::setupCommand);
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
             if (!SettingManager.enabled) return ActionResult.PASS;
             if (!player.isSneaking()) {return ActionResult.PASS;}

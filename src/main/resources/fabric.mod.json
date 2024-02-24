@@ -20,7 +20,7 @@
   "environment": "client",
   "entrypoints": {
     "client": [
-      "com.jackdaw.chatWithNPC.ChatWithNPCMod"
+      "com.jackdaw.chatwithnpc.ChatWithNPCMod"
     ]
   },
   "mixins": [
