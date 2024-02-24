@@ -1,122 +1,74 @@
 package com.jackdaw.chatwithnpc.auxiliary.configuration;
 
-import com.moandjiezana.toml.Toml;
+import com.jackdaw.chatwithnpc.ChatWithNPCMod;
+import com.jackdaw.chatwithnpc.auxiliary.yaml.YamlUtils;
 import org.slf4j.Logger;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
+import java.util.HashMap;
 
 /**
  * Manages the config files for the modules provided by this plugin.
  *
  * <p>
- * Configure the setting if a specific module is enable or disable.
+ * Configure the setting if a specific module is enabled or disabled.
  *
  * @author WDRshadow
- * @version v1.1
+ * @version v1.0
  */
 public class SettingManager {
-    private final Logger logger;
-    private final File workingDirectory;
-    private final File configFile;
+    private static final Logger logger = ChatWithNPCMod.LOGGER;
+    private static final File configFile = ChatWithNPCMod.workingDirectory.resolve("config.yml").toFile();
 
     // use for confirming the setting version is the same with the plugin
-    private static final String lastVersion = "v1.1";
+    private static final String lastVersion = "v1.0";
 
-    private boolean fastGameModeSettingEnabled;
-    private boolean teleportEnabled;
-    private boolean giveOPEnabled;
+    public static boolean enabled = true;
+    public static String apiKey = "";
+    public static String model = "text-davinci-003";
+    public static float temperature = 0.6f;
 
-    private boolean tempEnabled;
 
-    /**
-     * Instantiates a new Setting manager.
-     *
-     * @param workingDirectory the directory to store the config file
-     * @throws IOException the io exception. The client who
-     *                     create the instance is responsible for this.
-     */
-    public SettingManager(File workingDirectory, Logger logger) throws IOException {
-        this.logger = logger;
-        this.workingDirectory = workingDirectory;
-        this.configFile = new File(this.workingDirectory, "config.toml");
-        setUp();
-    }
-
-    private void setUp() throws IOException {
-        saveDefaultConfig();
-        Toml toml = new Toml().read(new File(workingDirectory, "config.toml"));
-        this.fastGameModeSettingEnabled = toml.getBoolean("fastGameModeSetting.enabled");
-        this.teleportEnabled = toml.getBoolean("teleport.enabled");
-        this.giveOPEnabled = toml.getBoolean("giveOP.enabled");
-        this.tempEnabled = toml.getBoolean("giveOP.temp");
-    }
-
-    private void saveDefaultConfig() throws IOException {
-        if (!workingDirectory.exists()) {
-            boolean aBoolean = workingDirectory.mkdir();
-            if (!aBoolean) logger.warn("Could Not make a new config.toml file.");
-        }
+    public static void loadConfig(){
         if (configFile.exists()) {
-            Toml toml = new Toml().read(new File(workingDirectory, "config.toml"));
-            String v;
             try {
-                v = toml.getString("version.version");
-                if (v.equals(lastVersion)) {
+                HashMap data = YamlUtils.readFile(configFile);
+                String version = (String) data.get("version");
+                if (!lastVersion.equals(version)) {
+                    logger.warn("The config file is not the same version with the plugin.");
+                    write();
+                }
+                SettingManager.enabled = (boolean) data.get("enabled");
+                SettingManager.apiKey = (String) data.get("apiKey");
+                SettingManager.model = (String) data.get("model");
+                SettingManager.temperature = (float) data.get("temperature");
+            } catch (FileNotFoundException e) {
+                logger.error("Can't open the config file.");
+            }
+        } else {
+            write();
+        }
+    }
+
+    public static void write() {
+        try {
+            if (!configFile.exists()) {
+                if (!configFile.createNewFile()) {
+                    logger.error("Can't create the config file.");
                     return;
                 }
-            } catch (Exception ignored) {
             }
-            boolean aBoolean = configFile.delete();
-            if (!aBoolean) logger.warn("Could Not delete old config file.");
-        }
-        newConfig();
-    }
-
-    private void newConfig() throws IOException {
-        InputStream in = SettingManager.class.getResourceAsStream("/config.toml");
-        try (in) {
-            assert in != null;
-            Files.copy(in, configFile.toPath());
+            HashMap data = new HashMap();
+            data.put("version", lastVersion);
+            data.put("enabled", SettingManager.enabled);
+            data.put("apiKey", SettingManager.apiKey);
+            data.put("model", SettingManager.model);
+            data.put("temperature", SettingManager.temperature);
+            YamlUtils.writeFile(configFile, data);
+        } catch (IOException e) {
+            logger.error("Can't write the config file.");
         }
     }
-
-    /**
-     * Is tab fastGameModeSetting enabled.
-     *
-     * @return the boolean, i.e. enabled returns true; otherwise, false.
-     */
-    public boolean isFastGameModeSettingEnabled() {
-        return fastGameModeSettingEnabled;
-    }
-
-    /**
-     * Is teleport enabled.
-     *
-     * @return the boolean, i.e. enabled returns true; otherwise, false.
-     */
-    public boolean isTeleportEnabled() {
-        return teleportEnabled;
-    }
-
-    /**
-     * Is giveOP enabled.
-     *
-     * @return the boolean, i.e. enabled returns true; otherwise, false.
-     */
-    public boolean isGiveOPEnabled() {
-        return giveOPEnabled;
-    }
-
-    /**
-     * Is giveOP temporary enabled.
-     *
-     * @return the boolean, i.e. enabled returns true; otherwise, false.
-     */
-    public boolean isTempEnabled() {
-        return tempEnabled;
-    }
-
 }

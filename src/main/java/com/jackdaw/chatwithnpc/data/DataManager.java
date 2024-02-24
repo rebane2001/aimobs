@@ -17,7 +17,7 @@ import java.util.HashMap;
  *
  * <p>Read or Write the data file with some information, each file just record one relative information.</p>
  */
-public class DataManager implements YamlMethods {
+public class DataManager implements YamlMethods, StorageInterface {
 
     private final Logger logger;
     private final File theFile;
@@ -27,7 +27,7 @@ public class DataManager implements YamlMethods {
     public DataManager(File workingDirectory, Logger logger, NPCEntity npc) {
         this.logger = logger;
         this.npc = npc;
-        this.theFile = new File(workingDirectory, npc.getName());
+        this.theFile = new File(workingDirectory, "npc" + npc.getName() + ".yml");
     }
 
     @Override

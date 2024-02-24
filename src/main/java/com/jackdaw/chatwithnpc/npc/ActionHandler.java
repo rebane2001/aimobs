@@ -1,7 +1,7 @@
 package com.jackdaw.chatwithnpc.npc;
 
 import com.jackdaw.chatwithnpc.api.RequestHandler;
-import com.jackdaw.chatwithnpc.auxiliary.configuration.AIMobsConfig;
+import com.jackdaw.chatwithnpc.auxiliary.configuration.SettingManager;
 import com.jackdaw.chatwithnpc.mixin.ChatHudAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ChatHudLine;
@@ -69,7 +69,7 @@ public class ActionHandler {
     public static void getResponse(PlayerEntity player) {
         // 1.5 second cooldown between requests
         if (lastRequest + 1500L > System.currentTimeMillis()) return;
-        if (AIMobsConfig.config.apiKey.isEmpty()) {
+        if (SettingManager.apiKey.isEmpty()) {
             player.sendMessage(Text.of("[chat-with-npc] You have not set an API key! Get one from https://beta.openai.com/account/api-keys and set it with /chat-with-npc setkey"));
             return;
         }

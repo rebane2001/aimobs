@@ -2,7 +2,7 @@ package com.jackdaw.chatwithnpc.api;
 
 import com.google.gson.Gson;
 import com.jackdaw.chatwithnpc.ChatWithNPCMod;
-import com.jackdaw.chatwithnpc.auxiliary.configuration.AIMobsConfig;
+import com.jackdaw.chatwithnpc.auxiliary.configuration.SettingManager;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -12,8 +12,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
-//import java.util.Objects;
-//import java.util.Objects;
 
 public class RequestHandler {
     private static class OpenAIRequest {
@@ -41,14 +39,14 @@ public class RequestHandler {
         if (prompt.length() > 4096) prompt = prompt.substring(prompt.length() - 4096);
         ChatWithNPCMod.LOGGER.info("Prompt: " + prompt);
 
-        OpenAIRequest openAIRequest = new OpenAIRequest(prompt, AIMobsConfig.config.model, AIMobsConfig.config.temperature);
+        OpenAIRequest openAIRequest = new OpenAIRequest(prompt, SettingManager.model, SettingManager.temperature);
         String data = new Gson().toJson(openAIRequest);
 
         try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
             HttpPost request = new HttpPost("https://api.openai.com/v1/completions");
             StringEntity params = new StringEntity(data, "UTF-8");
             request.addHeader("Content-Type", "application/json");
-            request.addHeader("Authorization", "Bearer " + AIMobsConfig.config.apiKey);
+            request.addHeader("Authorization", "Bearer " + SettingManager.apiKey);
             request.setEntity(params);
             HttpResponse response = httpClient.execute(request);
             HttpEntity entity = response.getEntity();

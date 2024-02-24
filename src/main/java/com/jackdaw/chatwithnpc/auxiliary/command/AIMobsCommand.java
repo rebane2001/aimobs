@@ -1,10 +1,10 @@
 package com.jackdaw.chatwithnpc.auxiliary.command;
 
+import com.jackdaw.chatwithnpc.auxiliary.configuration.SettingManager;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import com.jackdaw.chatwithnpc.auxiliary.configuration.AIMobsConfig;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.text.Text;
@@ -36,23 +36,23 @@ public class AIMobsCommand {
         );
     }
     public static int setEnabled(CommandContext<FabricClientCommandSource> context, boolean enabled) {
-        AIMobsConfig.config.enabled = enabled;
-        AIMobsConfig.saveConfig();
+        SettingManager.enabled = enabled;
+        SettingManager.write();
         context.getSource().sendFeedback(Text.of("ChatWithNPC " + (enabled ? "enabled" : "disabled")));
         return 1;
     }
 
     public static int status(CommandContext<FabricClientCommandSource> context) {
-        boolean hasKey = AIMobsConfig.config.apiKey.length() > 0;
+        boolean hasKey = SettingManager.apiKey.length() > 0;
         Text yes = Text.literal("Yes").formatted(Formatting.GREEN);
         Text no = Text.literal("No").formatted(Formatting.RED);
         Text helpText = Text.literal("")
                 .append(Text.literal("ChatWithNPC").formatted(Formatting.UNDERLINE))
                 .append("").formatted(Formatting.RESET)
-                .append("\nEnabled: ").append(AIMobsConfig.config.enabled ? yes : no)
+                .append("\nEnabled: ").append(SettingManager.enabled ? yes : no)
                 .append("\nAPI Key: ").append(hasKey ? yes : no)
-                .append("\nModel: ").append(AIMobsConfig.config.model)
-                .append("\nTemp: ").append(String.valueOf(AIMobsConfig.config.temperature))
+                .append("\nModel: ").append(SettingManager.model)
+                .append("\nTemp: ").append(String.valueOf(SettingManager.temperature))
                 .append("\n\nUse ").append(Text.literal("/chat-with-npc help").formatted(Formatting.GRAY)).append(" for help");
         context.getSource().sendFeedback(helpText);
         return 1;
@@ -75,8 +75,8 @@ public class AIMobsCommand {
     public static int setAPIKey(CommandContext<FabricClientCommandSource> context) {
         String apiKey = context.getArgument("key", String.class);
         if (apiKey.length() > 0) {
-            AIMobsConfig.config.apiKey = apiKey;
-            AIMobsConfig.saveConfig();
+            SettingManager.apiKey = apiKey;
+            SettingManager.write();
             context.getSource().sendFeedback(Text.of("API key set"));
             return 1;
         }
@@ -85,16 +85,16 @@ public class AIMobsCommand {
     public static int setModel(CommandContext<FabricClientCommandSource> context) {
         String model = context.getArgument("model", String.class);
         if (model.length() > 0) {
-            AIMobsConfig.config.model = model;
-            AIMobsConfig.saveConfig();
+            SettingManager.model = model;
+            SettingManager.write();
             context.getSource().sendFeedback(Text.of("Model set"));
             return 1;
         }
         return 0;
     }
     public static int setTemp(CommandContext<FabricClientCommandSource> context) {
-        AIMobsConfig.config.temperature = context.getArgument("temperature", float.class);
-        AIMobsConfig.saveConfig();
+        SettingManager.temperature = context.getArgument("temperature", float.class);
+        SettingManager.write();
         context.getSource().sendFeedback(Text.of("Temperature set"));
         return 1;
     }
