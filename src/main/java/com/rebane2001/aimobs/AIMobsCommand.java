@@ -37,7 +37,7 @@ public class AIMobsCommand {
     public static int setEnabled(CommandContext<FabricClientCommandSource> context, boolean enabled) {
         AIMobsConfig.config.enabled = enabled;
         AIMobsConfig.saveConfig();
-        context.getSource().sendFeedback(Text.of("AIMobs " + (enabled ? "enabled" : "disabled")));
+        context.getSource().sendFeedback(Text.of("ChatWithNPC " + (enabled ? "enabled" : "disabled")));
         return 1;
     }
 
@@ -46,7 +46,7 @@ public class AIMobsCommand {
         Text yes = Text.literal("Yes").formatted(Formatting.GREEN);
         Text no = Text.literal("No").formatted(Formatting.RED);
         Text helpText = Text.literal("")
-                .append(Text.literal("AIMobs").formatted(Formatting.UNDERLINE))
+                .append(Text.literal("ChatWithNPC").formatted(Formatting.UNDERLINE))
                 .append("").formatted(Formatting.RESET)
                 .append("\nEnabled: ").append(AIMobsConfig.config.enabled ? yes : no)
                 .append("\nAPI Key: ").append(hasKey ? yes : no)
@@ -59,7 +59,7 @@ public class AIMobsCommand {
 
     public static int help(CommandContext<FabricClientCommandSource> context) {
         Text helpText = Text.literal("")
-                .append("AIMobs Commands").formatted(Formatting.UNDERLINE)
+                .append("ChatWithNPC Commands").formatted(Formatting.UNDERLINE)
                 .append("").formatted(Formatting.RESET)
                 .append("\n/chat-with-npc - View configuration status")
                 .append("\n/chat-with-npc help - View commands help")
