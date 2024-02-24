@@ -4,6 +4,7 @@ import com.jackdaw.chatwithnpc.environment.EnvironmentManager;
 import com.jackdaw.chatwithnpc.environment.GlobalEnvironment;
 import com.jackdaw.chatwithnpc.environment.LocalEnvironment;
 import com.jackdaw.chatwithnpc.npc.NPCEntity;
+import org.jetbrains.annotations.NotNull;
 
 public class Builder {
     private String npcName;
@@ -18,22 +19,25 @@ public class Builder {
 
     private static final String globalEnvironmentPrompt = GlobalEnvironment.getGlobalEnvironment().getPrompt();
 
-    public Builder setFromEntity(NPCEntity npc) {
+    private String history;
+
+    public Builder setFromEntity(@NotNull NPCEntity npc) {
         this.npcName = npc.getName();
         this.type = npc.getType();
         this.npcCareer = npc.getCareer();
         this.basicPrompt = npc.getBasicPrompt();
+        this.history = npc.readMessageRecord();
         EnvironmentManager localEnvironment = new LocalEnvironment(npc.getLocalGroup());
         this.localEnvironmentPrompt = localEnvironment.getPrompt();
         return this;
     }
 
-    public Builder setLocalEnvironment(EnvironmentManager localEnvironment) {
+    public Builder setLocalEnvironment(@NotNull EnvironmentManager localEnvironment) {
         this.localEnvironmentPrompt = localEnvironment.getPrompt();
         return this;
     }
 
-    public Builder setFromPrompt(Prompt prompt) {
+    public Builder setFromPrompt(@NotNull Prompt prompt) {
         this.npcName = prompt.getNpcName();
         this.type = prompt.getType();
         this.npcCareer = prompt.getNpcCareer();
@@ -70,10 +74,11 @@ public class Builder {
     public Prompt build() {
         String finalPrompt =
                 "This is " + npcName + " who is a " + npcCareer + " and is a " + type
-                        + ". He possesses the following characteristics:" + basicPrompt
-                        + ". He is living in this small places (villages or cities): " + localEnvironmentPrompt
-                        + ". And he lives on this continent: " + globalEnvironmentPrompt;
-        return new Prompt(npcName, type, npcCareer, basicPrompt, localEnvironmentPrompt, globalEnvironmentPrompt, finalPrompt);
+                        + ".\n He possesses the following characteristics:\n" + basicPrompt
+                        + ".\n He is living in this small places (villages or cities): \n" + localEnvironmentPrompt
+                        + ".\n And he lives on this continent: \n" + globalEnvironmentPrompt
+                        + ".\n And he has the following chat log: \n" + history;
+        return new Prompt(npcName, type, npcCareer, basicPrompt, history, localEnvironmentPrompt, globalEnvironmentPrompt, finalPrompt);
     }
 
 }

@@ -31,4 +31,10 @@ public interface NPCHandler {
      * @return 该NPC的聊天记录。
      */
     TreeMap<Long, String> getChatHistory();
+
+    /**
+     * 获取该NPC的历史聊天记录。
+     * @return 该NPC的聊天记录。
+     */
+    String readMessageRecord();
 }

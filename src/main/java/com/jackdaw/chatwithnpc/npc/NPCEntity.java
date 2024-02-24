@@ -161,6 +161,19 @@ public abstract class NPCEntity implements NPCHandler {
     }
 
     /**
+     * 读取所有消息记录。
+     * @return 消息记录
+     */
+    public String readMessageRecord() {
+        // 一行一行地读取消息记录
+        StringBuilder messageRecord = new StringBuilder();
+        for (String message : this.messageRecord.values()) {
+            messageRecord.append(message).append("\n");
+        }
+        return messageRecord.toString();
+    }
+
+    /**
      * 获取NPC的数据管理器，该管理器应该用于管理NPC的数据。
      * @return NPC的数据管理器
      */
