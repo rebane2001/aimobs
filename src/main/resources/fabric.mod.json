@@ -17,14 +17,21 @@
   "license": "LGPL-3.0",
   "icon": "assets/chat-with-npc/icon.png",
 
-  "environment": "client",
+  "environment": "*",
   "entrypoints": {
     "main": [
       "com.jackdaw.chatwithnpc.ChatWithNPCMod"
+    ],
+    "client": [
+      "com.jackdaw.chatwithnpc.ChatWithNPCModClient"
     ]
   },
   "mixins": [
-    "chat-with-npc.mixins.json"
+    "chat-with-npc.mixins.json",
+    {
+      "config": "chat-with-npc.client.mixins.json",
+      "environment": "client"
+    }
   ],
 
   "depends": {
