@@ -38,7 +38,7 @@ public class CommandSet {
     }
     public static int setEnabled(CommandContext<FabricClientCommandSource> context, boolean enabled) {
         SettingManager.enabled = enabled;
-        SettingManager.write();
+        SettingManager.saveConfig();
         context.getSource().sendFeedback(Text.of("ChatWithNPC " + (enabled ? "enabled" : "disabled")));
         return 1;
     }
@@ -77,7 +77,7 @@ public class CommandSet {
         String apiKey = context.getArgument("key", String.class);
         if (!apiKey.isEmpty()) {
             SettingManager.apiKey = apiKey;
-            SettingManager.write();
+            SettingManager.saveConfig();
             context.getSource().sendFeedback(Text.of("API key set"));
             return 1;
         }
@@ -87,7 +87,7 @@ public class CommandSet {
         String model = context.getArgument("model", String.class);
         if (!model.isEmpty()) {
             SettingManager.model = model;
-            SettingManager.write();
+            SettingManager.saveConfig();
             context.getSource().sendFeedback(Text.of("Model set"));
             return 1;
         }
@@ -95,7 +95,7 @@ public class CommandSet {
     }
     public static int setTemp(CommandContext<FabricClientCommandSource> context) {
         SettingManager.temperature = context.getArgument("temperature", float.class);
-        SettingManager.write();
+        SettingManager.saveConfig();
         context.getSource().sendFeedback(Text.of("Temperature set"));
         return 1;
     }

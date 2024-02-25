@@ -58,7 +58,7 @@ public class EnvironmentDataManager implements DataManager {
     }
 
     @Override
-    public void write() {
+    public void save() {
         try {
             if (!isExist()) {
                 if (!theFile.createNewFile()) {

@@ -27,7 +27,7 @@ public abstract class NPCEntity implements NPCHandler {
     protected final UUID uuid;
     protected String career = "unemployed";
     protected String basicPrompt = "Hello, I'm a NPC.";
-    protected String localGroup = "default";
+    protected String localGroup = "Minecraft";
 
     protected long lastMessageTime = 0L;
 

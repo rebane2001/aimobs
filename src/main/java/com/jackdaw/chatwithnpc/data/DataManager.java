@@ -21,7 +21,7 @@ public interface DataManager {
     /**
      * Write the file as the class record.
      */
-    void write();
+    void save();
 
     /**
      * Delete the record.

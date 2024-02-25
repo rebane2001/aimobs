@@ -3,16 +3,11 @@ package com.jackdaw.chatwithnpc;
 import com.jackdaw.chatwithnpc.auxiliary.command.CommandSet;
 import com.jackdaw.chatwithnpc.auxiliary.configuration.SettingManager;
 import com.jackdaw.chatwithnpc.environment.EnvironmentManager;
-import com.jackdaw.chatwithnpc.event.ConversationHandler;
 import com.jackdaw.chatwithnpc.event.ConversationManager;
-import com.jackdaw.chatwithnpc.npc.LivingNPCEntity;
 import com.jackdaw.chatwithnpc.npc.NPCEntityManager;
-import com.jackdaw.chatwithnpc.npc.VillagerNPCEntity;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.util.ActionResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,38 +27,38 @@ public class ChatWithNPCMod implements ClientModInitializer {
     public static final long outOfTime = 300000L;
 
     // The time in milliseconds that check for out of time static data
-    public static final long updateInterval = 1000L;
+    public static final long updateInterval = 30000L;
 
     @Override
     public void onInitializeClient() {
+        // Create the working directory if it does not exist
         if (!Files.exists(workingDirectory)) {
             try {
                 Files.createDirectories(workingDirectory);
             } catch (IOException e) {
+                LOGGER.error("Failed to create the working directory");
                 LOGGER.error(e.getMessage());
                 throw new RuntimeException(e);
             }
         }
+        // Load the configuration
         SettingManager.loadConfig();
         // Load the global environment, and it will not be removed until the game is closed
         EnvironmentManager.loadEnvironment("Global");
+        // Register the command
         ClientCommandRegistrationCallback.EVENT.register(CommandSet::setupCommand);
+        // Register the event
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
+            // The mod must be enabled
             if (!SettingManager.enabled) return ActionResult.PASS;
+            // The player must be sneaking to start a conversation
             if (!player.isSneaking()) return ActionResult.PASS;
             // The entity must have a custom name to be an NPC
             if (entity.getCustomName() == null) return ActionResult.PASS;
             String name = entity.getCustomName().getString();
             // register the NPC entity and start a conversation
-            if (entity instanceof VillagerEntity villager) {
-                NPCEntityManager.registerNPCEntity(name, new VillagerNPCEntity(villager));
-                ConversationManager.startConversation(NPCEntityManager.getNPCEntity(name), player);
-            } else if (entity instanceof LivingEntity entityLiving) {
-                NPCEntityManager.registerNPCEntity(name, new LivingNPCEntity(entityLiving));
-                ConversationManager.startConversation(NPCEntityManager.getNPCEntity(name), player);
-            } else {
-                return ActionResult.PASS;
-            }
+            NPCEntityManager.registerNPCEntity(name, entity);
+            ConversationManager.startConversation(NPCEntityManager.getNPCEntity(name), player);
             return ActionResult.FAIL;
         });
         // Check for out of time static data

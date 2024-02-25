@@ -31,7 +31,7 @@ public class EnvironmentManager {
         if (environmentDataManager.isExist()) {
             environmentDataManager.sync();
         } else {
-            environmentDataManager.write();
+            environmentDataManager.save();
         }
         environmentMap.put(name, environment);
     }
@@ -50,7 +50,7 @@ public class EnvironmentManager {
                 return;
             }
             if (environment.getLastLoadTime() + outOfTime < System.currentTimeMillis()) {
-                environment.getDataManager().write();
+                environment.getDataManager().save();
                 removeEnvironment(name);
             }
         });

@@ -1,8 +1,10 @@
 package com.jackdaw.chatwithnpc.npc;
 
+import com.jackdaw.chatwithnpc.auxiliary.prompt.Builder;
 import com.jackdaw.chatwithnpc.auxiliary.prompt.Prompt;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 
 public class LivingNPCEntity extends NPCEntity{
@@ -17,7 +19,7 @@ public class LivingNPCEntity extends NPCEntity{
 
     @Override
     public void replyMessage(String message, PlayerEntity player) {
-        // TODO: Implement this method
+        player.sendMessage(Text.of("<" + this.getName() + "> " + message));
     }
 
     @Override
@@ -27,7 +29,6 @@ public class LivingNPCEntity extends NPCEntity{
 
     @Override
     public Prompt getPrompt() {
-        // TODO: Implement this method
-        return null;
+        return new Builder().setFromEntity(this).build();
     }
 }

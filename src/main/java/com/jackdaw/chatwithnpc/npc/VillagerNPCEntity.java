@@ -4,6 +4,7 @@ import com.jackdaw.chatwithnpc.auxiliary.prompt.Builder;
 import com.jackdaw.chatwithnpc.auxiliary.prompt.Prompt;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 
 public class VillagerNPCEntity extends NPCEntity {
@@ -19,7 +20,7 @@ public class VillagerNPCEntity extends NPCEntity {
 
     @Override
     public void replyMessage(String message, PlayerEntity player) {
-        // TODO: Implement this method
+        player.sendMessage(Text.of("<" + this.getName() + "> " + message));
     }
 
     @Override

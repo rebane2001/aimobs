@@ -58,7 +58,7 @@ public class NPCDataManager implements DataManager {
     }
 
     @Override
-    public void write() {
+    public void save() {
         try {
             if (!isExist()) {
                 if (!theFile.createNewFile()) {
@@ -79,6 +79,7 @@ public class NPCDataManager implements DataManager {
             for (long key : npc.getMessageRecord().keySet()) {
                 messageRecord.put(key, npc.getMessageRecord().get(key));
             }
+            data.put("history", messageRecord);
             YamlUtils.writeFile(theFile, data);
         } catch (IOException e) {
             logger.error("Can't write the data file.");

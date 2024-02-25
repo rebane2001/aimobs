@@ -1,9 +1,9 @@
 package com.jackdaw.chatwithnpc.auxiliary.prompt;
 
+import com.jackdaw.chatwithnpc.auxiliary.configuration.SettingManager;
 import com.jackdaw.chatwithnpc.environment.Environment;
 import com.jackdaw.chatwithnpc.environment.EnvironmentManager;
 import com.jackdaw.chatwithnpc.environment.GlobalEnvironment;
-import com.jackdaw.chatwithnpc.environment.LocalEnvironment;
 import com.jackdaw.chatwithnpc.npc.NPCEntity;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,6 +28,9 @@ public class Builder {
         this.npcCareer = npc.getCareer();
         this.basicPrompt = npc.getBasicPrompt();
         this.history = npc.readMessageRecord();
+        if (!EnvironmentManager.isLoaded(npc.getLocalGroup())) {
+            EnvironmentManager.loadEnvironment(npc.getLocalGroup());
+        }
         Environment localEnvironment = EnvironmentManager.getEnvironment(npc.getLocalGroup());
         this.localEnvironmentPrompt = localEnvironment.getPrompt();
         return this;
@@ -78,12 +81,15 @@ public class Builder {
      * @return 一个Prompt对象。
      */
     public Prompt build() {
+        String languagePrompt = "This conversation is using" + SettingManager.language + " as the language. Please use the same language to continue the conversation.";
         String finalPrompt =
-                "This is " + npcName + " who is a " + npcCareer + " and is a " + type
+                languagePrompt
+                        + "\n" + "This is " + npcName + " who is a " + npcCareer + " and is a " + type
                         + ".\n He possesses the following characteristics:\n" + basicPrompt
                         + ".\n He is living in this small places (villages or cities): \n" + localEnvironmentPrompt
-                        + ".\n And he lives on this continent: \n" + globalEnvironmentPrompt
-                        + ".\n And he has the following chat log: \n" + history;
+                        + globalEnvironmentPrompt
+                        + ".\n And he has the following chat log: \n" + history
+                        + ".\n Now please continue the conversation: \n";
         return new Prompt(npcName, type, npcCareer, basicPrompt, history, localEnvironmentPrompt, globalEnvironmentPrompt, finalPrompt);
     }
 

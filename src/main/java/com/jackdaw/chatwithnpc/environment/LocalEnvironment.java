@@ -37,7 +37,13 @@ public class LocalEnvironment implements Environment {
         for (String s : tempEnvironmentPrompt.values()) {
             prompt.append(s).append(";");
         }
-        return "This place is named " + name + ". The weather is " + weather + "And the environment is introduced as:" + prompt;
+        String begin;
+        if (name.equals("Global")) {
+            begin = "He lives on this continent: \n";
+        } else {
+            begin = "This place is named " + name + ". ";
+        }
+        return begin + "The weather is " + weather + "And the environment is introduced as:" + prompt;
     }
 
     @Override

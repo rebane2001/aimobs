@@ -27,7 +27,7 @@ public class SettingManager {
 
     public static boolean enabled = true;
 
-    public static String language = "zh";
+    public static String language = "Chinese";
     public static String apiKey = "";
     public static String model = "text-davinci-003";
     public static float temperature = 0.6f;
@@ -43,7 +43,7 @@ public class SettingManager {
                 String version = (String) data.get("version");
                 if (!lastVersion.equals(version)) {
                     logger.warn("The config file is not the same version with the plugin.");
-                    write();
+                    saveConfig();
                 }
                 SettingManager.enabled = (boolean) data.get("enabled");
                 SettingManager.language = (String) data.get("language");
@@ -54,14 +54,14 @@ public class SettingManager {
                 logger.error("Can't open the config file.");
             }
         } else {
-            write();
+            saveConfig();
         }
     }
 
     /**
      * Write the setting to the config file.
      */
-    public static void write() {
+    public static void saveConfig() {
         try {
             if (!configFile.exists()) {
                 if (!configFile.createNewFile()) {

@@ -2,6 +2,9 @@ package com.jackdaw.chatwithnpc.npc;
 
 import com.jackdaw.chatwithnpc.ChatWithNPCMod;
 import com.jackdaw.chatwithnpc.data.NPCDataManager;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.passive.VillagerEntity;
 
 import java.util.HashMap;
 
@@ -23,19 +26,27 @@ public class NPCEntityManager {
     /**
      * Initialize an NPC entity if the NPC is not conversing.
      * @param name The name of the NPC
-     * @param npcEntity The NPC entity to initialize
+     * @param entity The NPC entity to initialize
      */
-    public static void registerNPCEntity(String name, NPCEntity npcEntity) {
+    public static void registerNPCEntity(String name, Entity entity) {
         if (isRegistered(name)) {
             return;
         }
-        NPCDataManager npcDataManager = new NPCDataManager(npcEntity);
+        NPCEntity npcEntity;
+        if (entity instanceof VillagerEntity villager) {
+            npcEntity = new VillagerNPCEntity(villager);
+        } else if (entity instanceof LivingEntity entityLiving) {
+            npcEntity = new LivingNPCEntity(entityLiving);
+        } else {
+            return;
+        }
+        NPCDataManager npcDataManager = npcEntity.getDataManager();
         if (npcDataManager.isExist()) {
             npcDataManager.sync();
         } else {
-            npcDataManager.write();
+            npcDataManager.save();
         }
-        npcMap.put(npcEntity.getName(), npcEntity);
+        npcMap.put(name, npcEntity);
     }
 
     public static void removeNPCEntity(String name) {
@@ -49,7 +60,7 @@ public class NPCEntityManager {
     public static void endOutOfTimeNPCEntity() {
         npcMap.forEach((name, npcEntity) -> {
             if (npcEntity.getLastMessageTime() + outOfTime < System.currentTimeMillis()) {
-                npcEntity.getDataManager().write();
+                npcEntity.getDataManager().save();
                 removeNPCEntity(name);
             }
         });
