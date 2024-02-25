@@ -18,6 +18,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class ChatWithNPCMod implements ModInitializer {
 
@@ -76,15 +79,13 @@ public class ChatWithNPCMod implements ModInitializer {
         });
         LOGGER.info("[chat-with-npc] chat-with-npc has been Loaded");
         // Check for out of time static data
-        new Thread(() -> {
-            while (true) {
-                try {
-                    Thread.sleep(updateInterval);
-                } catch (InterruptedException e) {
-                    LOGGER.error(e.getMessage());
-                }
+        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+        executorService.scheduleAtFixedRate(() -> {
+            try {
                 UpdateStaticData.update();
+            } catch (Exception e) {
+                LOGGER.error(e.getMessage());
             }
-        }).start();
+        }, 0, updateInterval, TimeUnit.MILLISECONDS);
     }
 }

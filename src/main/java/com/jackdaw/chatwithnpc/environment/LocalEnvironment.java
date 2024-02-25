@@ -2,7 +2,7 @@ package com.jackdaw.chatwithnpc.environment;
 
 import com.jackdaw.chatwithnpc.data.EnvironmentDataManager;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -12,7 +12,7 @@ public class LocalEnvironment implements Environment {
 
     private String weather = "good";
 
-    private final HashSet<String> environmentPrompt = new HashSet<>();
+    private final ArrayList<String> environmentPrompt = new ArrayList<>();
 
     private final TreeMap<Long, String> tempEnvironmentPrompt = new TreeMap<>();
 
@@ -99,5 +99,11 @@ public class LocalEnvironment implements Environment {
     @Override
     public EnvironmentDataManager getDataManager() {
         return new EnvironmentDataManager(this);
+    }
+
+    @Override
+    public void setEnvironmentPrompt(ArrayList<String> environmentPrompt) {
+        this.environmentPrompt.clear();
+        this.environmentPrompt.addAll(environmentPrompt);
     }
 }

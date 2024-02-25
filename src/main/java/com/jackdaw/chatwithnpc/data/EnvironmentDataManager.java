@@ -8,8 +8,8 @@ import org.slf4j.Logger;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 
 /**
  * A serializer used to read or write the data from the files.
@@ -45,9 +45,11 @@ public class EnvironmentDataManager implements DataManager {
             // 读取储存在文件中的数据，然后将其赋值给environment
             environment.setWeather((String) data.get("weather"));
             // 在data中读取存在environmentPrompt中的数据
+            ArrayList<String> environmentPrompt = new ArrayList<>();
             for (Object s : (Iterable) data.get("environmentPrompt")) {
-                environment.addEnvironmentPrompt((String) s);
+                environmentPrompt.add((String) s);
             }
+            environment.setEnvironmentPrompt(environmentPrompt);
             // 在data中读取存在tempEnvironmentPrompt中的数据
             HashMap tempEnvironmentPrompt = (HashMap) data.get("tempEnvironmentPrompt");
             for (Object key : tempEnvironmentPrompt.keySet()) {
@@ -69,7 +71,7 @@ public class EnvironmentDataManager implements DataManager {
             }
             HashMap<String, Object> data = new HashMap<>();
             data.put("weather", environment.getWeather());
-            HashSet<String> environmentPrompt = new HashSet<>(environment.getEnvironmentPrompt());
+            ArrayList<String> environmentPrompt = new ArrayList<>(environment.getEnvironmentPrompt());
             data.put("environmentPrompt", environmentPrompt);
             HashMap<Long, String> tempEnvironmentPrompt = new HashMap<>();
             for (long time : environment.getTempEnvironmentPrompt().keySet()) {

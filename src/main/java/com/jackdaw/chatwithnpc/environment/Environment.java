@@ -2,6 +2,7 @@ package com.jackdaw.chatwithnpc.environment;
 
 import com.jackdaw.chatwithnpc.data.EnvironmentDataManager;
 
+import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -93,4 +94,11 @@ public interface Environment {
      * @return the data manager of the environment.
      */
     EnvironmentDataManager getDataManager();
+
+
+    /**
+     * Set the prompt of the environment.
+     * @param environmentPrompt the prompt of the environment.
+     */
+    void setEnvironmentPrompt(ArrayList<String> environmentPrompt);
 }

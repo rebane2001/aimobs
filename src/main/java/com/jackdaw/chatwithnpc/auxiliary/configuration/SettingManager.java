@@ -49,7 +49,7 @@ public class SettingManager {
                 SettingManager.language = (String) data.get("language");
                 SettingManager.apiKey = (String) data.get("apiKey");
                 SettingManager.model = (String) data.get("model");
-                SettingManager.temperature = (float) data.get("temperature");
+                SettingManager.temperature = Float.parseFloat(data.get("temperature").toString() + "f");
             } catch (FileNotFoundException e) {
                 logger.error("[chat-with-npc] Can't open the config file.");
             }
@@ -69,7 +69,7 @@ public class SettingManager {
                     return;
                 }
             }
-            HashMap data = new HashMap();
+            HashMap<String, Object> data = new HashMap<>();
             data.put("version", lastVersion);
             data.put("enabled", SettingManager.enabled);
             data.put("language", SettingManager.language);
