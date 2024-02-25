@@ -14,6 +14,11 @@ public class GlobalEnvironment extends LocalEnvironment implements Environment{
      */
     @Contract(" -> new")
     public static @NotNull GlobalEnvironment getGlobalEnvironment(){
-        return new GlobalEnvironment("Global");
+        GlobalEnvironment globalEnvironment = (GlobalEnvironment) EnvironmentManager.getEnvironment("Global");
+        if (globalEnvironment == null){
+            globalEnvironment = new GlobalEnvironment("Global");
+            EnvironmentManager.loadEnvironment("Global");
+        }
+        return globalEnvironment;
     }
 }

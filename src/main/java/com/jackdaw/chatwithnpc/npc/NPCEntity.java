@@ -174,6 +174,7 @@ public abstract class NPCEntity implements NPCHandler {
      * 读取所有消息记录。
      * @return 消息记录
      */
+    @Override
     public String readMessageRecord() {
         // 一行一行地读取消息记录
         StringBuilder messageRecord = new StringBuilder();
@@ -187,6 +188,7 @@ public abstract class NPCEntity implements NPCHandler {
      * 获取NPC的数据管理器，该管理器应该用于管理NPC的数据。
      * @return NPC的数据管理器
      */
+    @Override
     public NPCDataManager getDataManager() {
         return new NPCDataManager(this);
     }

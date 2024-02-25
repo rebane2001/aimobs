@@ -6,8 +6,6 @@ import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.TreeMap;
-
 public class VillagerNPCEntity extends NPCEntity {
 
     /**
@@ -34,9 +32,4 @@ public class VillagerNPCEntity extends NPCEntity {
         return new Builder().setFromEntity(this).build();
     }
 
-    @Override
-    public TreeMap<Long, String> getChatHistory() {
-        // TODO: Implement this method
-        return null;
-    }
 }

@@ -1,6 +1,7 @@
 package com.jackdaw.chatwithnpc.npc;
 
 import com.jackdaw.chatwithnpc.auxiliary.prompt.Prompt;
+import com.jackdaw.chatwithnpc.data.NPCDataManager;
 import net.minecraft.entity.player.PlayerEntity;
 
 import java.util.TreeMap;
@@ -31,11 +32,11 @@ public interface NPCHandler {
      * 获取该NPC的历史聊天记录。
      * @return 该NPC的聊天记录。
      */
-    TreeMap<Long, String> getChatHistory();
+    String readMessageRecord();
 
     /**
-     * 获取该NPC的历史聊天记录。
-     * @return 该NPC的聊天记录。
+     * 获取该NPC的数据管理器。
+     * @return 该NPC的数据管理器。
      */
-    String readMessageRecord();
+    NPCDataManager getDataManager();
 }

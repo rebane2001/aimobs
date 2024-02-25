@@ -16,7 +16,9 @@ public class LocalEnvironment implements Environment {
 
     private final TreeMap<Long, String> tempEnvironmentPrompt = new TreeMap<>();
 
-    public LocalEnvironment(String name) {
+    private long lastLoadTime = 0L;
+
+    LocalEnvironment(String name) {
         this.name = name;
     }
 
@@ -46,6 +48,16 @@ public class LocalEnvironment implements Environment {
     @Override
     public void setWeather(String weather) {
         this.weather = weather;
+    }
+
+    @Override
+    public long getLastLoadTime() {
+        return lastLoadTime;
+    }
+
+    @Override
+    public void setLastLoadTime(long time) {
+        lastLoadTime = time;
     }
 
     @Override

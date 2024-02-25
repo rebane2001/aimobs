@@ -1,5 +1,6 @@
 package com.jackdaw.chatwithnpc.npc;
 
+import com.jackdaw.chatwithnpc.ChatWithNPCMod;
 import com.jackdaw.chatwithnpc.data.NPCDataManager;
 
 import java.util.HashMap;
@@ -10,12 +11,12 @@ import java.util.HashMap;
  */
 public class NPCEntityManager {
 
-    // The time in milliseconds that a conversation is considered out of time
-    private static final long outOfTime = 300000L;
+    // The time in milliseconds that an NPCEntity is considered out of time
+    private static final long outOfTime = ChatWithNPCMod.outOfTime;
 
     public static final HashMap<String, NPCEntity> npcMap = new HashMap<>();
 
-    public static boolean isConversing(String name) {
+    public static boolean isRegistered(String name) {
         return npcMap.containsKey(name);
     }
 
@@ -25,7 +26,7 @@ public class NPCEntityManager {
      * @param npcEntity The NPC entity to initialize
      */
     public static void registerNPCEntity(String name, NPCEntity npcEntity) {
-        if (isConversing(name)) {
+        if (isRegistered(name)) {
             return;
         }
         NPCDataManager npcDataManager = new NPCDataManager(npcEntity);
@@ -45,9 +46,10 @@ public class NPCEntityManager {
         return npcMap.get(name);
     }
 
-    public static void endOutOfTimeConversations() {
+    public static void endOutOfTimeNPCEntity() {
         npcMap.forEach((name, npcEntity) -> {
             if (npcEntity.getLastMessageTime() + outOfTime < System.currentTimeMillis()) {
+                npcEntity.getDataManager().write();
                 removeNPCEntity(name);
             }
         });

@@ -41,6 +41,18 @@ public interface Environment {
     void setWeather(String weather);
 
     /**
+     * Get the last load time of the environment.
+     * @return the last load time of the environment.
+     */
+    long getLastLoadTime();
+
+    /**
+     * Set the last load time of the environment.
+     * @param time the last load time of the environment.
+     */
+    void setLastLoadTime(long time);
+
+    /**
      * Add a temporary environment prompt.
      * @param prompt the prompt to be added.
      * @param time the time when the prompt is added.

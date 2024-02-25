@@ -1,7 +1,6 @@
 package com.jackdaw.chatwithnpc.data;
 
 import com.jackdaw.chatwithnpc.ChatWithNPCMod;
-import com.jackdaw.chatwithnpc.auxiliary.yaml.YamlMethods;
 import com.jackdaw.chatwithnpc.auxiliary.yaml.YamlUtils;
 import com.jackdaw.chatwithnpc.npc.NPCEntity;
 import org.slf4j.Logger;
@@ -9,8 +8,6 @@ import org.slf4j.Logger;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -20,7 +17,7 @@ import java.util.HashMap;
  *
  * <p>Read or Write the data file with some information, each file just record one relative information.</p>
  */
-public class NPCDataManager implements YamlMethods{
+public class NPCDataManager implements DataManager {
 
     private static final Logger logger = ChatWithNPCMod.LOGGER;
     private final File theFile;

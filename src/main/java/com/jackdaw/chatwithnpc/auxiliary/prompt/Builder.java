@@ -1,6 +1,7 @@
 package com.jackdaw.chatwithnpc.auxiliary.prompt;
 
 import com.jackdaw.chatwithnpc.environment.Environment;
+import com.jackdaw.chatwithnpc.environment.EnvironmentManager;
 import com.jackdaw.chatwithnpc.environment.GlobalEnvironment;
 import com.jackdaw.chatwithnpc.environment.LocalEnvironment;
 import com.jackdaw.chatwithnpc.npc.NPCEntity;
@@ -27,7 +28,7 @@ public class Builder {
         this.npcCareer = npc.getCareer();
         this.basicPrompt = npc.getBasicPrompt();
         this.history = npc.readMessageRecord();
-        Environment localEnvironment = new LocalEnvironment(npc.getLocalGroup());
+        Environment localEnvironment = EnvironmentManager.getEnvironment(npc.getLocalGroup());
         this.localEnvironmentPrompt = localEnvironment.getPrompt();
         return this;
     }

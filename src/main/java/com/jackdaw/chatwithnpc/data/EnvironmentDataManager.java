@@ -1,7 +1,6 @@
 package com.jackdaw.chatwithnpc.data;
 
 import com.jackdaw.chatwithnpc.ChatWithNPCMod;
-import com.jackdaw.chatwithnpc.auxiliary.yaml.YamlMethods;
 import com.jackdaw.chatwithnpc.auxiliary.yaml.YamlUtils;
 import com.jackdaw.chatwithnpc.environment.Environment;
 import org.slf4j.Logger;
@@ -18,7 +17,7 @@ import java.util.HashMap;
  *
  * <p>Read or Write the data file with some information, each file just record one relative information.</p>
  */
-public class EnvironmentDataManager implements YamlMethods {
+public class EnvironmentDataManager implements DataManager {
 
     private static final Logger logger = ChatWithNPCMod.LOGGER;
     private final File theFile;

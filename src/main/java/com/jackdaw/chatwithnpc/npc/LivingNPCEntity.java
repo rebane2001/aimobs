@@ -5,8 +5,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.TreeMap;
-
 public class LivingNPCEntity extends NPCEntity{
     /**
      * This is a constructor used to initialize the NPC with the entity.
@@ -29,12 +27,6 @@ public class LivingNPCEntity extends NPCEntity{
 
     @Override
     public Prompt getPrompt() {
-        // TODO: Implement this method
-        return null;
-    }
-
-    @Override
-    public TreeMap<Long, String> getChatHistory() {
         // TODO: Implement this method
         return null;
     }

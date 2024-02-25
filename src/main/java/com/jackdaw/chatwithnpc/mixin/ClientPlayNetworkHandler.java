@@ -16,6 +16,7 @@ public class ClientPlayNetworkHandler {
 		if (!SettingManager.enabled) return;
 		PlayerEntity player = MinecraftClient.getInstance().player;
 		if (player == null) return;
-		ConversationManager.getConversation(player).replyToEntity(message);
+		// If the player is conversing with an NPC, reply the message to the NPC
+		if (ConversationManager.isConversing(player)) ConversationManager.getConversation(player).replyToEntity(message);
 	}
 }

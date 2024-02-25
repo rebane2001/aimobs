@@ -1,5 +1,6 @@
 package com.jackdaw.chatwithnpc.event;
 
+import com.jackdaw.chatwithnpc.ChatWithNPCMod;
 import com.jackdaw.chatwithnpc.npc.NPCEntity;
 import net.minecraft.entity.player.PlayerEntity;
 
@@ -13,7 +14,7 @@ import java.util.HashMap;
 public class ConversationManager {
 
     // The time in milliseconds that a conversation is considered out of time
-    private static final long outOfTime = 300000L;
+    private static final long outOfTime = ChatWithNPCMod.outOfTime;
     public static final HashMap<PlayerEntity, ConversationHandler> conversationMap = new HashMap<>();
 
     /**
@@ -28,10 +29,11 @@ public class ConversationManager {
         conversationMap.put(player, conversationHandler);
     }
 
-    public static void endConversation(PlayerEntity player) {
+    private static void endConversation(PlayerEntity player) {
         conversationMap.remove(player);
     }
 
+    // must check if the player is conversing before calling this method
     public static ConversationHandler getConversation(PlayerEntity player) {
         return conversationMap.get(player);
     }
@@ -40,7 +42,7 @@ public class ConversationManager {
         return conversationMap.containsKey(player);
     }
 
-    public static void findAndEndConversation(PlayerEntity player) {
+    private static void findAndEndConversation(PlayerEntity player) {
         if (isConversing(player)) {
             endConversation(player);
         }
