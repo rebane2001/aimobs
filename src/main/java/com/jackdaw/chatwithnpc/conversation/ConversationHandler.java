@@ -24,6 +24,10 @@ public class ConversationHandler {
         this.prompt = npc.getPrompt();
     }
 
+    private void sendWaitMessage() {
+        player.sendMessage(Text.of("<" + npc.getName() + "> ..."));
+    }
+
     public void getResponse(PlayerEntity player) {
         // 1.5 second cooldown between requests
         if (npc.getLastMessageTime() + 1500L > System.currentTimeMillis()) return;
@@ -47,12 +51,14 @@ public class ConversationHandler {
     }
 
     public void startConversation() {
+        sendWaitMessage();
         prompt.setInitialPrompt();
         getResponse(player);
         updateTime = System.currentTimeMillis();
     }
 
     public void replyToEntity(String message) {
+        sendWaitMessage();
         npc.addMessageRecord(System.currentTimeMillis(), message, player.getName().getString());
         prompt.addPlayerMessage(message);
         getResponse(player);

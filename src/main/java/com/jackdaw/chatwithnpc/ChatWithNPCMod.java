@@ -4,6 +4,7 @@ import com.jackdaw.chatwithnpc.auxiliary.command.CommandSet;
 import com.jackdaw.chatwithnpc.auxiliary.configuration.SettingManager;
 import com.jackdaw.chatwithnpc.environment.EnvironmentManager;
 import com.jackdaw.chatwithnpc.conversation.ConversationManager;
+import com.jackdaw.chatwithnpc.event.PlayerSendMessageCallback;
 import com.jackdaw.chatwithnpc.npc.NPCEntityManager;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -62,7 +63,14 @@ public class ChatWithNPCMod implements ModInitializer {
             return ActionResult.FAIL;
         });
         // Register the player chat event
-
+        PlayerSendMessageCallback.EVENT.register((player, message) -> {
+            // The mod must be enabled
+            if (!SettingManager.enabled) return ActionResult.PASS;
+            // The player must be in a conversation
+            if (!ConversationManager.isConversing(player)) return ActionResult.PASS;
+            ConversationManager.getConversation(player).replyToEntity(message);
+            return ActionResult.PASS;
+        });
         LOGGER.info("ChatWithNPCMod has been Loaded");
         // Check for out of time static data
         new Thread(() -> {

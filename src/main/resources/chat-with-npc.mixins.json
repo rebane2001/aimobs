@@ -4,7 +4,7 @@
   "package": "com.jackdaw.chatwithnpc.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "ExampleMixin"
+    "PlayerSendMessageMixin"
   ],
   "injectors": {
     "defaultRequire": 1
