@@ -7,6 +7,12 @@ package com.jackdaw.chatwithnpc.auxiliary.yaml;
  */
 public interface YamlMethods {
     /**
+     * Check if the file exists.
+     * @return true if the file exists, otherwise false.
+     */
+    boolean isExist();
+
+    /**
      * Read the user data file.
      */
     void sync();

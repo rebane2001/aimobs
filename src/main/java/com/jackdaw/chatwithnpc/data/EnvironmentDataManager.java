@@ -3,7 +3,7 @@ package com.jackdaw.chatwithnpc.data;
 import com.jackdaw.chatwithnpc.ChatWithNPCMod;
 import com.jackdaw.chatwithnpc.auxiliary.yaml.YamlMethods;
 import com.jackdaw.chatwithnpc.auxiliary.yaml.YamlUtils;
-import com.jackdaw.chatwithnpc.environment.EnvironmentManager;
+import com.jackdaw.chatwithnpc.environment.Environment;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -23,15 +23,21 @@ public class EnvironmentDataManager implements YamlMethods {
     private static final Logger logger = ChatWithNPCMod.LOGGER;
     private final File theFile;
 
-    private final EnvironmentManager environment;
+    private final Environment environment;
 
-    public EnvironmentDataManager(EnvironmentManager environment) {
+    public EnvironmentDataManager(Environment environment) {
         this.environment = environment;
         this.theFile = new File(ChatWithNPCMod.workingDirectory.toFile(), "environment" + environment.getName() + ".yml");
     }
+
+    @Override
+    public boolean isExist() {
+        return theFile.exists();
+    }
+
     @Override
     public void sync() {
-        if (!theFile.exists()) {
+        if (!isExist()) {
             return;
         }
         try {
@@ -55,8 +61,9 @@ public class EnvironmentDataManager implements YamlMethods {
     @Override
     public void write() {
         try {
-            if (!theFile.exists()) {
+            if (!isExist()) {
                 if (!theFile.createNewFile()) {
+                    logger.error("Can't create the data file.");
                     return;
                 }
             }
@@ -76,7 +83,8 @@ public class EnvironmentDataManager implements YamlMethods {
 
     @Override
     public void delete() {
-        if (!theFile.exists()) {
+        if (!isExist()) {
+            logger.warn("The data file doesn't exist.");
             return;
         }
         if (!theFile.delete()) {

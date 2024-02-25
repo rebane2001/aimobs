@@ -33,8 +33,14 @@ public class NPCDataManager implements YamlMethods{
     }
 
     @Override
+    public boolean isExist() {
+        return theFile.exists();
+    }
+
+    @Override
     public void sync() {
-        if (!theFile.exists()) {
+        if (!isExist()) {
+            logger.error("The data file doesn't exist.");
             return;
         }
         try {
@@ -57,8 +63,9 @@ public class NPCDataManager implements YamlMethods{
     @Override
     public void write() {
         try {
-            if (!theFile.exists()) {
+            if (!isExist()) {
                 if (!theFile.createNewFile()) {
+                    logger.error("Can't create the data file.");
                     return;
                 }
             }
@@ -83,7 +90,8 @@ public class NPCDataManager implements YamlMethods{
 
     @Override
     public void delete() {
-        if (!theFile.exists()) {
+        if (!isExist()) {
+            logger.warn("The data file doesn't exist.");
             return;
         }
         if (!theFile.delete()) {

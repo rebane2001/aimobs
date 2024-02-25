@@ -1,5 +1,6 @@
 package com.jackdaw.chatwithnpc.npc;
 
+import com.jackdaw.chatwithnpc.auxiliary.prompt.Prompt;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +28,7 @@ public class LivingNPCEntity extends NPCEntity{
     }
 
     @Override
-    public String getPrompt() {
+    public Prompt getPrompt() {
         // TODO: Implement this method
         return null;
     }

@@ -1,6 +1,6 @@
-package com.jackdaw.chatwithnpc.prompt;
+package com.jackdaw.chatwithnpc.auxiliary.prompt;
 
-import com.jackdaw.chatwithnpc.environment.EnvironmentManager;
+import com.jackdaw.chatwithnpc.environment.Environment;
 import com.jackdaw.chatwithnpc.environment.GlobalEnvironment;
 import com.jackdaw.chatwithnpc.environment.LocalEnvironment;
 import com.jackdaw.chatwithnpc.npc.NPCEntity;
@@ -27,12 +27,12 @@ public class Builder {
         this.npcCareer = npc.getCareer();
         this.basicPrompt = npc.getBasicPrompt();
         this.history = npc.readMessageRecord();
-        EnvironmentManager localEnvironment = new LocalEnvironment(npc.getLocalGroup());
+        Environment localEnvironment = new LocalEnvironment(npc.getLocalGroup());
         this.localEnvironmentPrompt = localEnvironment.getPrompt();
         return this;
     }
 
-    public Builder setLocalEnvironment(@NotNull EnvironmentManager localEnvironment) {
+    public Builder setLocalEnvironment(@NotNull Environment localEnvironment) {
         this.localEnvironmentPrompt = localEnvironment.getPrompt();
         return this;
     }
@@ -42,6 +42,7 @@ public class Builder {
         this.type = prompt.getType();
         this.npcCareer = prompt.getNpcCareer();
         this.basicPrompt = prompt.getBasicPrompt();
+        this.history = prompt.getHistory();
         this.localEnvironmentPrompt = prompt.getLocalEnvironmentPrompt();
         return this;
     }
@@ -71,6 +72,10 @@ public class Builder {
         return this;
     }
 
+    /**
+     * 构建一个Prompt对象。这将包含NPC的所有基础信息。包括NPC的名字，类型，职业，基础提示，历史聊天记录，本地环境提示和全局环境提示。但不包括当前会话的聊天记录。
+     * @return 一个Prompt对象。
+     */
     public Prompt build() {
         String finalPrompt =
                 "This is " + npcName + " who is a " + npcCareer + " and is a " + type

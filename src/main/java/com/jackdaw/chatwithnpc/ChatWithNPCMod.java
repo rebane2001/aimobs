@@ -2,14 +2,14 @@ package com.jackdaw.chatwithnpc;
 
 import com.jackdaw.chatwithnpc.auxiliary.command.CommandSet;
 import com.jackdaw.chatwithnpc.auxiliary.configuration.SettingManager;
-import com.jackdaw.chatwithnpc.event.EventHandler;
-import com.jackdaw.chatwithnpc.npc.ActionHandler;
+import com.jackdaw.chatwithnpc.event.ConversationHandler;
+import com.jackdaw.chatwithnpc.event.ConversationManager;
 import com.jackdaw.chatwithnpc.npc.LivingNPCEntity;
+import com.jackdaw.chatwithnpc.npc.NPCEntityManager;
 import com.jackdaw.chatwithnpc.npc.VillagerNPCEntity;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.util.ActionResult;
@@ -41,17 +41,19 @@ public class ChatWithNPCMod implements ClientModInitializer {
         ClientCommandRegistrationCallback.EVENT.register(CommandSet::setupCommand);
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
             if (!SettingManager.enabled) return ActionResult.PASS;
-            if (!player.isSneaking()) {return ActionResult.PASS;}
-            // ActionHandler.startConversation(entity, player);
-            EventHandler eventHandler;
+            if (!player.isSneaking()) return ActionResult.PASS;
+            // The entity must have a custom name to be an NPC
+            if (entity.getCustomName() == null) return ActionResult.PASS;
+            String name = entity.getCustomName().getString();
             if (entity instanceof VillagerEntity villager) {
-                eventHandler = new EventHandler(new VillagerNPCEntity(villager), player);
+                NPCEntityManager.registerNPCEntity(name, new VillagerNPCEntity(villager));
+                ConversationManager.startConversation(NPCEntityManager.getNPCEntity(name), player);
             } else if (entity instanceof LivingEntity entityLiving) {
-                eventHandler = new EventHandler(new LivingNPCEntity(entityLiving), player);
+                NPCEntityManager.registerNPCEntity(name, new LivingNPCEntity(entityLiving));
+                ConversationManager.startConversation(NPCEntityManager.getNPCEntity(name), player);
             } else {
                 return ActionResult.PASS;
             }
-            eventHandler.startConversation();
             return ActionResult.FAIL;
         });
     }

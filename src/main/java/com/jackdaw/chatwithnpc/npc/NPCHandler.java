@@ -1,5 +1,6 @@
 package com.jackdaw.chatwithnpc.npc;
 
+import com.jackdaw.chatwithnpc.auxiliary.prompt.Prompt;
 import net.minecraft.entity.player.PlayerEntity;
 
 import java.util.TreeMap;
@@ -24,7 +25,7 @@ public interface NPCHandler {
      * 创建一个提示信息，用于输入至ChatGPT中获取信息。该prompt包括该NPC的各类特征，包括本地环境和全剧环境以及玩家的信息。
      * @return 该NPC的提示信息。
      */
-    String getPrompt();
+    Prompt getPrompt();
 
     /**
      * 获取该NPC的历史聊天记录。

@@ -1,5 +1,7 @@
 package com.jackdaw.chatwithnpc.npc;
 
+import com.jackdaw.chatwithnpc.auxiliary.prompt.Builder;
+import com.jackdaw.chatwithnpc.auxiliary.prompt.Prompt;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import org.jetbrains.annotations.NotNull;
@@ -28,9 +30,8 @@ public class VillagerNPCEntity extends NPCEntity {
     }
 
     @Override
-    public String getPrompt() {
-        // TODO: Implement this method
-        return null;
+    public Prompt getPrompt() {
+        return new Builder().setFromEntity(this).build();
     }
 
     @Override

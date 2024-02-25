@@ -19,15 +19,15 @@ import java.util.UUID;
  */
 public abstract class NPCEntity implements NPCHandler {
 
-    protected Entity entity;
+    protected final Entity entity;
     protected final String name;
 
     protected final String type;
 
     protected final UUID uuid;
-    protected String career = "";
-    protected String basicPrompt = "";
-    protected String localGroup = "";
+    protected String career = "unemployed";
+    protected String basicPrompt = "Hello, I'm a NPC.";
+    protected String localGroup = "default";
 
     protected long lastMessageTime = 0L;
 
@@ -141,6 +141,16 @@ public abstract class NPCEntity implements NPCHandler {
      */
     public void updateLastMessageTime(long lastMessageTime) {
         this.lastMessageTime = lastMessageTime;
+    }
+
+    /**
+     * 添加NPC的消息记录，该记录应该包括了NPC的最近一条消息。
+     * @param time NPC的消息时间
+     * @param message NPC的消息内容
+     * @param speaker NPC的消息发出者
+     */
+    public void addMessageRecord(long time, String message, String speaker) {
+        this.messageRecord.put(time, speaker+ "says: " + message);
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.jackdaw.chatwithnpc.prompt;
+package com.jackdaw.chatwithnpc.auxiliary.prompt;
 
 public class Prompt {
     private final String npcName;
@@ -15,7 +15,7 @@ public class Prompt {
 
     private final String globalEnvironmentPrompt;
 
-    private final String finalPrompt;
+    private String finalPrompt;
 
     Prompt(String npcName, String type, String npcCareer, String basicPrompt, String history, String localEnvironmentPrompt, String globalEnvironmentPrompt, String finalPrompt) {
         this.npcName = npcName;
@@ -28,8 +28,43 @@ public class Prompt {
         this.finalPrompt = finalPrompt;
     }
 
+    /**
+     * 获取完整的NPC的提示信息。
+     * @return NPC的提示信息。
+     */
     public String getPrompt() {
         return finalPrompt;
+    }
+
+    /**
+     * 添加一个提示。
+     * @param prompt 要添加的提示。
+     */
+    public void addPrompt(String prompt) {
+        finalPrompt += prompt;
+    }
+
+    /**
+     * 设置会话初始提示。
+     */
+    public void setInitialPrompt() {
+        addPrompt("You are talking to " + npcName + ".\n The " + npcName + " says: ");
+    }
+
+    /**
+     * 添加玩家的新消息。
+     * @param message 玩家的消息。
+     */
+    public void addPlayerMessage(String message) {
+        addPrompt("You say: " + message + ".\n The " + npcName + " says: ");
+    }
+
+    /**
+     * 添加NPC的新消息。
+     * @param message NPC的消息。
+     */
+    public void addNpcMessage(String message) {
+        addPrompt(message + "\n");
     }
 
     public String getNpcName() {
@@ -46,6 +81,10 @@ public class Prompt {
 
     public String getBasicPrompt() {
         return basicPrompt;
+    }
+
+    public String getHistory() {
+        return history;
     }
 
     public String getLocalEnvironmentPrompt() {

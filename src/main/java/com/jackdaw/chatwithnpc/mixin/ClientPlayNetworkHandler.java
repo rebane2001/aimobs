@@ -1,7 +1,7 @@
 package com.jackdaw.chatwithnpc.mixin;
 
 import com.jackdaw.chatwithnpc.auxiliary.configuration.SettingManager;
-import com.jackdaw.chatwithnpc.npc.ActionHandler;
+import com.jackdaw.chatwithnpc.event.ConversationManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,6 +16,6 @@ public class ClientPlayNetworkHandler {
 		if (!SettingManager.enabled) return;
 		PlayerEntity player = MinecraftClient.getInstance().player;
 		if (player == null) return;
-		ActionHandler.replyToEntity(message, player);
+		ConversationManager.getConversation(player).replyToEntity(message);
 	}
 }

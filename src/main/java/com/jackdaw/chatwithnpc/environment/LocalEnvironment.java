@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-public class LocalEnvironment implements EnvironmentManager{
+public class LocalEnvironment implements Environment {
 
     private final String name;
 
