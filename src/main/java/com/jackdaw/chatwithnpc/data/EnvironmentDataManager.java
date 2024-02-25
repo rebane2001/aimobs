@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * A serializer used to read or write the data from the files.
@@ -26,7 +27,7 @@ public class EnvironmentDataManager implements DataManager {
 
     public EnvironmentDataManager(Environment environment) {
         this.environment = environment;
-        this.theFile = new File(ChatWithNPCMod.workingDirectory.toFile(), "environment" + environment.getName() + ".yml");
+        this.theFile = new File(ChatWithNPCMod.workingDirectory.toFile(), "environment/" + environment.getName() + ".yml");
     }
 
     @Override
@@ -53,7 +54,7 @@ public class EnvironmentDataManager implements DataManager {
                 environment.addTempEnvironmentPrompt((String) tempEnvironmentPrompt.get(key), (long) key);
             }
         } catch (FileNotFoundException e) {
-            logger.error("Can't open the data file.");
+            logger.error("[chat-with-npc] Can't open the data file.");
         }
     }
 
@@ -62,32 +63,33 @@ public class EnvironmentDataManager implements DataManager {
         try {
             if (!isExist()) {
                 if (!theFile.createNewFile()) {
-                    logger.error("Can't create the data file.");
+                    logger.error("[chat-with-npc] Can't create the data file.");
                     return;
                 }
             }
-            HashMap data = new HashMap();
+            HashMap<String, Object> data = new HashMap<>();
             data.put("weather", environment.getWeather());
-            data.put("environmentPrompt", environment.getEnvironmentPrompt());
-            HashMap tempEnvironmentPrompt = new HashMap();
+            HashSet<String> environmentPrompt = new HashSet<>(environment.getEnvironmentPrompt());
+            data.put("environmentPrompt", environmentPrompt);
+            HashMap<Long, String> tempEnvironmentPrompt = new HashMap<>();
             for (long time : environment.getTempEnvironmentPrompt().keySet()) {
                 tempEnvironmentPrompt.put(time, environment.getTempEnvironmentPrompt().get(time));
             }
             data.put("tempEnvironmentPrompt", tempEnvironmentPrompt);
             YamlUtils.writeFile(theFile, data);
         } catch (IOException e) {
-            logger.error("Can't write the data file.");
+            logger.error("[chat-with-npc] Can't write the data file.");
         }
     }
 
     @Override
     public void delete() {
         if (!isExist()) {
-            logger.warn("The data file doesn't exist.");
+            logger.warn("[chat-with-npc] The data file doesn't exist.");
             return;
         }
         if (!theFile.delete()) {
-            logger.error("Can't delete the data file.");
+            logger.error("[chat-with-npc] Can't delete the data file.");
         }
     }
 }

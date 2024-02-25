@@ -42,7 +42,7 @@ public class SettingManager {
                 HashMap data = YamlUtils.readFile(configFile);
                 String version = (String) data.get("version");
                 if (!lastVersion.equals(version)) {
-                    logger.warn("The config file is not the same version with the plugin.");
+                    logger.warn("[chat-with-npc] The config file is not the same version with the plugin.");
                     saveConfig();
                 }
                 SettingManager.enabled = (boolean) data.get("enabled");
@@ -51,7 +51,7 @@ public class SettingManager {
                 SettingManager.model = (String) data.get("model");
                 SettingManager.temperature = (float) data.get("temperature");
             } catch (FileNotFoundException e) {
-                logger.error("Can't open the config file.");
+                logger.error("[chat-with-npc] Can't open the config file.");
             }
         } else {
             saveConfig();
@@ -65,7 +65,7 @@ public class SettingManager {
         try {
             if (!configFile.exists()) {
                 if (!configFile.createNewFile()) {
-                    logger.error("Can't create the config file.");
+                    logger.error("[chat-with-npc] Can't create the config file.");
                     return;
                 }
             }
@@ -78,7 +78,7 @@ public class SettingManager {
             data.put("temperature", SettingManager.temperature);
             YamlUtils.writeFile(configFile, data);
         } catch (IOException e) {
-            logger.error("Can't write the config file.");
+            logger.error("[chat-with-npc] Can't write the config file.");
         }
     }
 }

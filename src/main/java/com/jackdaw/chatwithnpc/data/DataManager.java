@@ -1,5 +1,11 @@
 package com.jackdaw.chatwithnpc.data;
 
+import com.jackdaw.chatwithnpc.ChatWithNPCMod;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 /**
  * A serializer used to read or write the information from the Yaml files.
  *
@@ -27,4 +33,20 @@ public interface DataManager {
      * Delete the record.
      */
     void delete();
+
+    /**
+     * Create the directory.
+     */
+    static void mkdir(String childPathName) {
+        Path workingDirectory = ChatWithNPCMod.workingDirectory.resolve(childPathName);
+        if (!Files.exists(workingDirectory)) {
+            try {
+                Files.createDirectories(workingDirectory);
+            } catch (IOException e) {
+                ChatWithNPCMod.LOGGER.error("[chat-with-npc] Failed to create the npc directory");
+                ChatWithNPCMod.LOGGER.error(e.getMessage());
+                throw new RuntimeException(e);
+            }
+        }
+    }
 }

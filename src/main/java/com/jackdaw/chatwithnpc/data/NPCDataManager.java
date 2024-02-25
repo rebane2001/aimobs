@@ -26,7 +26,7 @@ public class NPCDataManager implements DataManager {
 
     public NPCDataManager(NPCEntity npc) {
         this.npc = npc;
-        this.theFile = new File(ChatWithNPCMod.workingDirectory.toFile(), "npc" + npc.getName() + ".yml");
+        this.theFile = new File(ChatWithNPCMod.workingDirectory.toFile(), "npc/" + npc.getName() + ".yml");
     }
 
     @Override
@@ -37,7 +37,7 @@ public class NPCDataManager implements DataManager {
     @Override
     public void sync() {
         if (!isExist()) {
-            logger.error("The data file doesn't exist.");
+            logger.error("[chat-with-npc] The data file doesn't exist.");
             return;
         }
         try {
@@ -53,7 +53,7 @@ public class NPCDataManager implements DataManager {
                 npc.addMessageRecord((long) key, (String) messageRecord.get(key));
             }
         } catch (FileNotFoundException e) {
-            logger.error("Can't open the data file.");
+            logger.error("[chat-with-npc] Can't open the data file.");
         }
     }
 
@@ -62,11 +62,11 @@ public class NPCDataManager implements DataManager {
         try {
             if (!isExist()) {
                 if (!theFile.createNewFile()) {
-                    logger.error("Can't create the data file.");
+                    logger.error("[chat-with-npc] Can't create the data file.");
                     return;
                 }
             }
-            HashMap data = new HashMap();
+            HashMap<String, Object> data = new HashMap<>();
             // 将npc的数据写入data中
             data.put("name", npc.getName());
             data.put("uuid", npc.getUuid().toString());
@@ -82,18 +82,18 @@ public class NPCDataManager implements DataManager {
             data.put("history", messageRecord);
             YamlUtils.writeFile(theFile, data);
         } catch (IOException e) {
-            logger.error("Can't write the data file.");
+            logger.error("[chat-with-npc] Can't write the data file.");
         }
     }
 
     @Override
     public void delete() {
         if (!isExist()) {
-            logger.warn("The data file doesn't exist.");
+            logger.warn("[chat-with-npc] The data file doesn't exist.");
             return;
         }
         if (!theFile.delete()) {
-            logger.error("Can't delete the data file.");
+            logger.error("[chat-with-npc] Can't delete the data file.");
         }
     }
 }

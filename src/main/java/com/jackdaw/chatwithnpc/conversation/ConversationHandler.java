@@ -32,7 +32,7 @@ public class ConversationHandler {
         // 1.5 second cooldown between requests
         if (npc.getLastMessageTime() + 1500L > System.currentTimeMillis()) return;
         if (SettingManager.apiKey.isEmpty()) {
-            player.sendMessage(Text.of("You have not set an API key! Get one from https://beta.openai.com/account/api-keys and set it with /chat-with-npc setkey"));
+            player.sendMessage(Text.of("[chat-with-npc] You have not set an API key! Get one from https://beta.openai.com/account/api-keys and set it with /chat-with-npc setkey"));
             return;
         }
         npc.updateLastMessageTime(System.currentTimeMillis());
@@ -43,7 +43,7 @@ public class ConversationHandler {
                 npc.addMessageRecord(npc.getLastMessageTime(), response, npc.getName());
                 prompt.addNpcMessage(response);
             } catch (Exception e) {
-                player.sendMessage(Text.of("Error getting response"));
+                player.sendMessage(Text.of("[chat-with-npc] Error getting response"));
                 ChatWithNPCMod.LOGGER.error(e.getMessage());
             }
         });

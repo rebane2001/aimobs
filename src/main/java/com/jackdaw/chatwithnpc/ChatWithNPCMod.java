@@ -2,6 +2,7 @@ package com.jackdaw.chatwithnpc;
 
 import com.jackdaw.chatwithnpc.auxiliary.command.CommandSet;
 import com.jackdaw.chatwithnpc.auxiliary.configuration.SettingManager;
+import com.jackdaw.chatwithnpc.data.DataManager;
 import com.jackdaw.chatwithnpc.environment.EnvironmentManager;
 import com.jackdaw.chatwithnpc.conversation.ConversationManager;
 import com.jackdaw.chatwithnpc.event.PlayerSendMessageCallback;
@@ -37,13 +38,15 @@ public class ChatWithNPCMod implements ModInitializer {
             try {
                 Files.createDirectories(workingDirectory);
             } catch (IOException e) {
-                LOGGER.error("Failed to create the working directory");
+                LOGGER.error("[chat-with-npc] Failed to create the working directory");
                 LOGGER.error(e.getMessage());
                 throw new RuntimeException(e);
             }
         }
         // Load the configuration
         SettingManager.loadConfig();
+        DataManager.mkdir("npc");
+        DataManager.mkdir("environment");
         // Load the global environment, and it will not be removed until the game is closed
         EnvironmentManager.loadEnvironment("Global");
         // Register the command
@@ -71,7 +74,7 @@ public class ChatWithNPCMod implements ModInitializer {
             ConversationManager.getConversation(player).replyToEntity(message);
             return ActionResult.PASS;
         });
-        LOGGER.info("ChatWithNPCMod has been Loaded");
+        LOGGER.info("[chat-with-npc] chat-with-npc has been Loaded");
         // Check for out of time static data
         new Thread(() -> {
             while (true) {

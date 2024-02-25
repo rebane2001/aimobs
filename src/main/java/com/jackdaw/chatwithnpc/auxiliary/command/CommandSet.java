@@ -40,7 +40,7 @@ public class CommandSet {
     public static int setEnabled(CommandContext<ServerCommandSource> context, boolean enabled) {
         SettingManager.enabled = enabled;
         SettingManager.saveConfig();
-        context.getSource().sendFeedback(Text.of("ChatWithNPC " + (enabled ? "enabled" : "disabled")), true);
+        context.getSource().sendFeedback(Text.of("[chat-with-npc] ChatWithNPC " + (enabled ? "enabled" : "disabled")), true);
         return 1;
     }
 
@@ -49,7 +49,7 @@ public class CommandSet {
         Text yes = Text.literal("Yes").formatted(Formatting.GREEN);
         Text no = Text.literal("No").formatted(Formatting.RED);
         Text helpText = Text.literal("")
-                .append(Text.literal("ChatWithNPC").formatted(Formatting.UNDERLINE))
+                .append(Text.literal("[chat-with-npc] ChatWithNPC").formatted(Formatting.UNDERLINE))
                 .append("").formatted(Formatting.RESET)
                 .append("\nEnabled: ").append(SettingManager.enabled ? yes : no)
                 .append("\nAPI Key: ").append(hasKey ? yes : no)
@@ -62,7 +62,7 @@ public class CommandSet {
 
     public static int help(CommandContext<ServerCommandSource> context) {
         Text helpText = Text.literal("")
-                .append("ChatWithNPC Commands").formatted(Formatting.UNDERLINE)
+                .append("[chat-with-npc] ChatWithNPC Commands").formatted(Formatting.UNDERLINE)
                 .append("").formatted(Formatting.RESET)
                 .append("\n/npchat - View configuration status")
                 .append("\n/npchat help - View commands help")
@@ -79,7 +79,7 @@ public class CommandSet {
         if (!apiKey.isEmpty()) {
             SettingManager.apiKey = apiKey;
             SettingManager.saveConfig();
-            context.getSource().sendFeedback(Text.of("API key set"), true);
+            context.getSource().sendFeedback(Text.of("[chat-with-npc] API key set"), true);
             return 1;
         }
         return 0;
@@ -89,7 +89,7 @@ public class CommandSet {
         if (!model.isEmpty()) {
             SettingManager.model = model;
             SettingManager.saveConfig();
-            context.getSource().sendFeedback(Text.of("Model set"), true);
+            context.getSource().sendFeedback(Text.of("[chat-with-npc] Model set"), true);
             return 1;
         }
         return 0;
@@ -97,7 +97,7 @@ public class CommandSet {
     public static int setTemp(CommandContext<ServerCommandSource> context) {
         SettingManager.temperature = context.getArgument("temperature", float.class);
         SettingManager.saveConfig();
-        context.getSource().sendFeedback(Text.of("Temperature set"), true);
+        context.getSource().sendFeedback(Text.of("[chat-with-npc] Temperature set"), true);
         return 1;
     }
 }

@@ -39,7 +39,7 @@ public abstract class NPCEntity implements NPCHandler {
      */
     public NPCEntity(@NotNull Entity entity) {
         if (entity.getCustomName() == null) {
-            throw new IllegalArgumentException("The entity must have a custom name.");
+            throw new IllegalArgumentException("[chat-with-npc] The entity must have a custom name.");
         }
         this.name = entity.getCustomName().getString();
         this.type = entity.getName().getString();
