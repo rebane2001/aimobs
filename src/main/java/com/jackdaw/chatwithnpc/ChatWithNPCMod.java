@@ -3,10 +3,10 @@ package com.jackdaw.chatwithnpc;
 import com.jackdaw.chatwithnpc.auxiliary.command.CommandSet;
 import com.jackdaw.chatwithnpc.auxiliary.configuration.SettingManager;
 import com.jackdaw.chatwithnpc.environment.EnvironmentManager;
-import com.jackdaw.chatwithnpc.event.ConversationManager;
+import com.jackdaw.chatwithnpc.conversation.ConversationManager;
 import com.jackdaw.chatwithnpc.npc.NPCEntityManager;
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.minecraft.util.ActionResult;
 import org.slf4j.Logger;
@@ -17,7 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class ChatWithNPCMod implements ClientModInitializer {
+public class ChatWithNPCMod implements ModInitializer {
 
     public static final Logger LOGGER = LoggerFactory.getLogger("chat-with-npc");
 
@@ -30,7 +30,7 @@ public class ChatWithNPCMod implements ClientModInitializer {
     public static final long updateInterval = 30000L;
 
     @Override
-    public void onInitializeClient() {
+    public void onInitialize() {
         // Create the working directory if it does not exist
         if (!Files.exists(workingDirectory)) {
             try {
@@ -46,8 +46,8 @@ public class ChatWithNPCMod implements ClientModInitializer {
         // Load the global environment, and it will not be removed until the game is closed
         EnvironmentManager.loadEnvironment("Global");
         // Register the command
-        ClientCommandRegistrationCallback.EVENT.register(CommandSet::setupCommand);
-        // Register the event
+        CommandRegistrationCallback.EVENT.register(CommandSet::setupCommand);
+        // Register the conversation
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
             // The mod must be enabled
             if (!SettingManager.enabled) return ActionResult.PASS;
@@ -61,6 +61,9 @@ public class ChatWithNPCMod implements ClientModInitializer {
             ConversationManager.startConversation(NPCEntityManager.getNPCEntity(name), player);
             return ActionResult.FAIL;
         });
+        // Register the player chat event
+
+        LOGGER.info("ChatWithNPCMod has been Loaded");
         // Check for out of time static data
         new Thread(() -> {
             while (true) {

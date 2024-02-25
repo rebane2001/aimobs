@@ -3,9 +3,8 @@
   "minVersion": "0.8",
   "package": "com.jackdaw.chatwithnpc.mixin",
   "compatibilityLevel": "JAVA_17",
-  "client": [
-    "ChatHudAccessor",
-    "ClientPlayNetworkHandler"
+  "mixins": [
+    "ExampleMixin"
   ],
   "injectors": {
     "defaultRequire": 1

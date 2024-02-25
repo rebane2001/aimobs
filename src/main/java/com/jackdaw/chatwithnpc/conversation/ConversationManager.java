@@ -1,4 +1,4 @@
-package com.jackdaw.chatwithnpc.event;
+package com.jackdaw.chatwithnpc.conversation;
 
 import com.jackdaw.chatwithnpc.ChatWithNPCMod;
 import com.jackdaw.chatwithnpc.npc.NPCEntity;

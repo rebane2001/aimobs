@@ -19,7 +19,7 @@
 
   "environment": "client",
   "entrypoints": {
-    "client": [
+    "main": [
       "com.jackdaw.chatwithnpc.ChatWithNPCMod"
     ]
   },

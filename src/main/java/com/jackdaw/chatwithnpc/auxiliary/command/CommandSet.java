@@ -5,18 +5,19 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.server.command.CommandManager;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.NotNull;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
+import static net.minecraft.server.command.CommandManager.argument;
+import static net.minecraft.server.command.CommandManager.literal;
 
 public class CommandSet {
 
-    public static void setupCommand(@NotNull CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
+    public static void setupCommand(@NotNull CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment environment) {
         dispatcher.register(literal("npchat")
                 .executes(CommandSet::status)
                 .then(literal("help").executes(CommandSet::help))
@@ -36,14 +37,14 @@ public class CommandSet {
                 .then(literal("disable").executes(context -> setEnabled(context, false)))
         );
     }
-    public static int setEnabled(CommandContext<FabricClientCommandSource> context, boolean enabled) {
+    public static int setEnabled(CommandContext<ServerCommandSource> context, boolean enabled) {
         SettingManager.enabled = enabled;
         SettingManager.saveConfig();
-        context.getSource().sendFeedback(Text.of("ChatWithNPC " + (enabled ? "enabled" : "disabled")));
+        context.getSource().sendFeedback(Text.of("ChatWithNPC " + (enabled ? "enabled" : "disabled")), true);
         return 1;
     }
 
-    public static int status(CommandContext<FabricClientCommandSource> context) {
+    public static int status(CommandContext<ServerCommandSource> context) {
         boolean hasKey = !SettingManager.apiKey.isEmpty();
         Text yes = Text.literal("Yes").formatted(Formatting.GREEN);
         Text no = Text.literal("No").formatted(Formatting.RED);
@@ -55,11 +56,11 @@ public class CommandSet {
                 .append("\nModel: ").append(SettingManager.model)
                 .append("\nTemp: ").append(String.valueOf(SettingManager.temperature))
                 .append("\n\nUse ").append(Text.literal("/npchat help").formatted(Formatting.GRAY)).append(" for help");
-        context.getSource().sendFeedback(helpText);
+        context.getSource().sendFeedback(helpText, false);
         return 1;
     }
 
-    public static int help(CommandContext<FabricClientCommandSource> context) {
+    public static int help(CommandContext<ServerCommandSource> context) {
         Text helpText = Text.literal("")
                 .append("ChatWithNPC Commands").formatted(Formatting.UNDERLINE)
                 .append("").formatted(Formatting.RESET)
@@ -70,33 +71,33 @@ public class CommandSet {
                 .append("\n/npchat setmodel <model> - Set AI model")
                 .append("\n/npchat settemp <temperature> - Set model temperature")
                 .append("\nYou can talk to mobs by shift-clicking on them!");
-        context.getSource().sendFeedback(helpText);
+        context.getSource().sendFeedback(helpText, false);
         return 1;
     }
-    public static int setAPIKey(CommandContext<FabricClientCommandSource> context) {
+    public static int setAPIKey(CommandContext<ServerCommandSource> context) {
         String apiKey = context.getArgument("key", String.class);
         if (!apiKey.isEmpty()) {
             SettingManager.apiKey = apiKey;
             SettingManager.saveConfig();
-            context.getSource().sendFeedback(Text.of("API key set"));
+            context.getSource().sendFeedback(Text.of("API key set"), true);
             return 1;
         }
         return 0;
     }
-    public static int setModel(CommandContext<FabricClientCommandSource> context) {
+    public static int setModel(CommandContext<ServerCommandSource> context) {
         String model = context.getArgument("model", String.class);
         if (!model.isEmpty()) {
             SettingManager.model = model;
             SettingManager.saveConfig();
-            context.getSource().sendFeedback(Text.of("Model set"));
+            context.getSource().sendFeedback(Text.of("Model set"), true);
             return 1;
         }
         return 0;
     }
-    public static int setTemp(CommandContext<FabricClientCommandSource> context) {
+    public static int setTemp(CommandContext<ServerCommandSource> context) {
         SettingManager.temperature = context.getArgument("temperature", float.class);
         SettingManager.saveConfig();
-        context.getSource().sendFeedback(Text.of("Temperature set"));
+        context.getSource().sendFeedback(Text.of("Temperature set"), true);
         return 1;
     }
 }
