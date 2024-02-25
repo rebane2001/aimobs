@@ -29,7 +29,7 @@ public abstract class NPCEntity implements NPCHandler {
     protected String basicPrompt = "Hello, I'm a NPC.";
     protected String localGroup = "Minecraft";
 
-    protected long lastMessageTime = 0L;
+    protected long lastMessageTime;
 
     protected final TreeMap<Long, String> messageRecord = new TreeMap<>();
 
@@ -42,9 +42,10 @@ public abstract class NPCEntity implements NPCHandler {
             throw new IllegalArgumentException("[chat-with-npc] The entity must have a custom name.");
         }
         this.name = entity.getCustomName().getString();
-        this.type = entity.getName().getString();
+        this.type = entity.getType().toString();
         this.uuid = entity.getUuid();
         this.entity = entity;
+        this.lastMessageTime = System.currentTimeMillis();
     }
 
     /**
@@ -176,10 +177,10 @@ public abstract class NPCEntity implements NPCHandler {
      */
     @Override
     public String readMessageRecord() {
-        // 一行一行地读取消息记录
+        // 一行一行地读取消息记录，并将时间和内容都其拼接成一个字符串。
         StringBuilder messageRecord = new StringBuilder();
-        for (String message : this.messageRecord.values()) {
-            messageRecord.append(message).append("\n");
+        for (Long time : this.messageRecord.keySet()) {
+            messageRecord.append(time).append(": ").append(this.messageRecord.get(time)).append(";");
         }
         return messageRecord.toString();
     }

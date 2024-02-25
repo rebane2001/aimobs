@@ -4,7 +4,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 public class GlobalEnvironment extends LocalEnvironment implements Environment{
-    private GlobalEnvironment(String name) {
+    GlobalEnvironment(String name) {
         super(name);
     }
 

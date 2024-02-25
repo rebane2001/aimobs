@@ -46,7 +46,7 @@ public class NPCDataManager implements DataManager {
             npc.setCareer((String) data.get("careers"));
             npc.setLocalGroup((String) data.get("localGroup"));
             npc.setBasicPrompt((String) data.get("basicPrompt"));
-            npc.updateLastMessageTime((long) data.get("lastMessageTime"));
+            npc.updateLastMessageTime(Long.parseLong(data.get("lastMessageTime").toString()));
             // 在data中读取存在history中的数据，其中key为时间，value为消息
             HashMap messageRecord = (HashMap) data.get("history");
             for (Object key : messageRecord.keySet()) {

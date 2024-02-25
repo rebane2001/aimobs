@@ -29,6 +29,7 @@ public class NPCEntityManager {
      * @param entity The NPC entity to initialize
      */
     public static void registerNPCEntity(String name, Entity entity) {
+        ChatWithNPCMod.LOGGER.debug("[chat-with-npc] Registering NPC: " + name);
         if (isRegistered(name)) {
             return;
         }
@@ -40,12 +41,16 @@ public class NPCEntityManager {
         } else {
             return;
         }
+        ChatWithNPCMod.LOGGER.debug("[chat-with-npc] loading NPC: " + name);
         NPCDataManager npcDataManager = npcEntity.getDataManager();
         if (npcDataManager.isExist()) {
+            ChatWithNPCMod.LOGGER.debug("[chat-with-npc] The NPC has data file. Syncing the data.");
             npcDataManager.sync();
         } else {
+            ChatWithNPCMod.LOGGER.debug("[chat-with-npc] The NPC doesn't have data file. Saving the data with default setting.");
             npcDataManager.save();
         }
+        ChatWithNPCMod.LOGGER.debug("[chat-with-npc] The NPC has been loaded and saved.");
         npcMap.put(name, npcEntity);
     }
 

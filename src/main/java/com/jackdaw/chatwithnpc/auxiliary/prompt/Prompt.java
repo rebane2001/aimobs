@@ -48,7 +48,7 @@ public class Prompt {
      * 设置会话初始提示。
      */
     public void setInitialPrompt() {
-        addPrompt("You are talking to " + npcName + ".\n The " + npcName + " says: ");
+        addPrompt("You are playing as NPC named "+ npcName + " talking to the Player. You start the conversation:");
     }
 
     /**
@@ -56,7 +56,7 @@ public class Prompt {
      * @param message 玩家的消息。
      */
     public void addPlayerMessage(String message) {
-        addPrompt("You say: " + message + ".\n The " + npcName + " says: ");
+        addPrompt("The player say: " + message + "\n");
     }
 
     /**
@@ -64,7 +64,7 @@ public class Prompt {
      * @param message NPC的消息。
      */
     public void addNpcMessage(String message) {
-        addPrompt(message + "\n");
+        addPrompt("The " + npcName + " says: " + message + "\n");
     }
 
     public String getNpcName() {

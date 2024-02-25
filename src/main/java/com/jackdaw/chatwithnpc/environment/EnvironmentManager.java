@@ -23,7 +23,12 @@ public class EnvironmentManager {
      * @param name The name of the environment
      */
     public static void loadEnvironment(String name) {
-        Environment environment = new LocalEnvironment(name);
+        Environment environment;
+        if (name.equals("Global")) {
+            environment = new GlobalEnvironment("Global");
+        } else {
+            environment = new LocalEnvironment(name);
+        }
         if (isLoaded(name)) {
             return;
         }

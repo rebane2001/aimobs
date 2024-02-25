@@ -23,10 +23,16 @@ public class ConversationManager {
      * @param player The player to start a conversation with
      */
     public static void startConversation(NPCEntity npc, PlayerEntity player) {
+        if (isConversing(player) && getConversation(player).npc.equals(npc)) {
+            ChatWithNPCMod.LOGGER.debug("[chat-with-npc] The player is already conversing with " + getConversation(player).npc.getName());
+            return;
+        }
         if (npc == null || player == null) return;
+        ChatWithNPCMod.LOGGER.debug("[chat-with-npc] Starting new conversation with " + npc.getName() + " for " + player.getName());
         findAndEndConversation(player);
         ConversationHandler conversationHandler = new ConversationHandler(npc, player);
         conversationHandler.startConversation();
+        ChatWithNPCMod.LOGGER.debug("[chat-with-npc] Conversation started.");
         conversationMap.put(player, conversationHandler);
     }
 

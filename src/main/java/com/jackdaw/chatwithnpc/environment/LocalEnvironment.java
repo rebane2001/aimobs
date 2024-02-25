@@ -39,11 +39,11 @@ public class LocalEnvironment implements Environment {
         }
         String begin;
         if (name.equals("Global")) {
-            begin = "He lives on this continent: \n";
+            begin = "";
         } else {
-            begin = "This place is named " + name + ". ";
+            begin = "a place named " + name + ", ";
         }
-        return begin + "The weather is " + weather + "And the environment is introduced as:" + prompt;
+        return begin + "where the weather is " + weather + "And the environment is introduced as: " + prompt;
     }
 
     @Override

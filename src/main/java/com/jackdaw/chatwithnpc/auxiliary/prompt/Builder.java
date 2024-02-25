@@ -1,5 +1,6 @@
 package com.jackdaw.chatwithnpc.auxiliary.prompt;
 
+import com.jackdaw.chatwithnpc.ChatWithNPCMod;
 import com.jackdaw.chatwithnpc.auxiliary.configuration.SettingManager;
 import com.jackdaw.chatwithnpc.environment.Environment;
 import com.jackdaw.chatwithnpc.environment.EnvironmentManager;
@@ -23,6 +24,7 @@ public class Builder {
     private String history;
 
     public Builder setFromEntity(@NotNull NPCEntity npc) {
+        ChatWithNPCMod.LOGGER.debug("[chat-with-npc] Loading prompt from " + npc.getName());
         this.npcName = npc.getName();
         this.type = npc.getType();
         this.npcCareer = npc.getCareer();
@@ -81,15 +83,15 @@ public class Builder {
      * @return 一个Prompt对象。
      */
     public Prompt build() {
-        String languagePrompt = "This conversation is using" + SettingManager.language + " as the language. Please use the same language to continue the conversation.";
+        String languagePrompt = "This conversation is using " + SettingManager.language + " as the language. Please use the same language to continue the conversation. The conversation is between player and an NPC. You need to play as the NPC to continue the conversation.";
         String finalPrompt =
                 languagePrompt
-                        + "\n" + "This is " + npcName + " who is a " + npcCareer + " and is a " + type
-                        + ".\n He possesses the following characteristics:\n" + basicPrompt
-                        + ".\n He is living in this small places (villages or cities): \n" + localEnvironmentPrompt
-                        + globalEnvironmentPrompt
-                        + ".\n And he has the following chat log: \n" + history
-                        + ".\n Now please continue the conversation: \n";
+                        + "The NPC is named " + npcName + " and its career is " + npcCareer + " and it is a " + type + " in Minecraft."
+                        + "It has the following characteristics: " + basicPrompt
+                        + "This NPC is living in (villages or cities) " + localEnvironmentPrompt
+                        + "The NPC is living in a global world " +globalEnvironmentPrompt
+                        + "And it has the following chat log with some one: " + history
+                        + "Now please continue the conversation: \n";
         return new Prompt(npcName, type, npcCareer, basicPrompt, history, localEnvironmentPrompt, globalEnvironmentPrompt, finalPrompt);
     }
 

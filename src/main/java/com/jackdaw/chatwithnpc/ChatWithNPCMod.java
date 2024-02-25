@@ -56,6 +56,7 @@ public class ChatWithNPCMod implements ModInitializer {
         CommandRegistrationCallback.EVENT.register(CommandSet::setupCommand);
         // Register the conversation
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
+            LOGGER.debug("[chat-with-npc] AttackEntityCallback: " + player.getName().getString() + "is trying to chat with" + entity.getName().getString());
             // The mod must be enabled
             if (!SettingManager.enabled) return ActionResult.PASS;
             // The player must be sneaking to start a conversation
@@ -63,13 +64,16 @@ public class ChatWithNPCMod implements ModInitializer {
             // The entity must have a custom name to be an NPC
             if (entity.getCustomName() == null) return ActionResult.PASS;
             String name = entity.getCustomName().getString();
+            LOGGER.debug("[chat-with-npc] The NPC is named: " + name);
             // register the NPC entity and start a conversation
             NPCEntityManager.registerNPCEntity(name, entity);
+            LOGGER.debug("[chat-with-npc] The NPC has been registered. Start a conversation with the player: " + player.getName().getString());
             ConversationManager.startConversation(NPCEntityManager.getNPCEntity(name), player);
             return ActionResult.FAIL;
         });
         // Register the player chat event
         PlayerSendMessageCallback.EVENT.register((player, message) -> {
+            LOGGER.info("[chat-with-npc] PlayerSendMessageCallback: exec!");
             // The mod must be enabled
             if (!SettingManager.enabled) return ActionResult.PASS;
             // The player must be in a conversation

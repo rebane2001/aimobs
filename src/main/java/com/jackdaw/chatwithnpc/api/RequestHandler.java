@@ -36,8 +36,9 @@ public class RequestHandler {
     }
 
     public static String getAIResponse(String prompt) throws IOException {
+        ChatWithNPCMod.LOGGER.info("[chat-with-npc] Connecting to OpenAI API.");
         if (prompt.length() > 4096) prompt = prompt.substring(prompt.length() - 4096);
-        ChatWithNPCMod.LOGGER.info("Prompt: " + prompt);
+        ChatWithNPCMod.LOGGER.info("[chat-with-npc] Prompt: \n" + prompt);
 
         OpenAIRequest openAIRequest = new OpenAIRequest(prompt, SettingManager.model, SettingManager.temperature);
         String data = new Gson().toJson(openAIRequest);
