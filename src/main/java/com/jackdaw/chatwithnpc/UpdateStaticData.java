@@ -10,4 +10,14 @@ public class UpdateStaticData {
         NPCEntityManager.endOutOfTimeNPCEntity();
         EnvironmentManager.endOutOfTimeEnvironments();
     }
+
+    public static void close() {
+        try {
+            ConversationManager.endAllConversations();
+            NPCEntityManager.endAllNPCEntity();
+            EnvironmentManager.endAllEnvironments();
+        }
+        catch (Exception ignored) {
+        }
+    }
 }

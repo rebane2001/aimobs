@@ -35,11 +35,20 @@ dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	// https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
+
+
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	implementation("org.yaml:snakeyaml:2.2")
+	implementation "org.yaml:snakeyaml:2.2"
 	include "org.yaml:snakeyaml:2.2"
+	implementation "org.apache.httpcomponents:httpclient:4.5.13"
+	include "org.apache.httpcomponents:httpclient:4.5.13"
+	implementation "org.apache.httpcomponents:httpcore:4.4.14"
+	include "org.apache.httpcomponents:httpcore:4.4.14"
+	implementation "commons-logging:commons-logging:1.2"
+	include "commons-logging:commons-logging:1.2"
 
 	// Uncomment the following line to enable the deprecated Fabric API modules.
 	// These are included in the Fabric API production distribution and allow you to update your mod to the latest modules at a later more convenient time.

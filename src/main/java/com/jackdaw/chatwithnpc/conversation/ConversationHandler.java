@@ -1,7 +1,7 @@
 package com.jackdaw.chatwithnpc.conversation;
 
 import com.jackdaw.chatwithnpc.ChatWithNPCMod;
-import com.jackdaw.chatwithnpc.api.RequestHandler;
+import com.jackdaw.chatwithnpc.api.OpenAIHandler;
 import com.jackdaw.chatwithnpc.auxiliary.configuration.SettingManager;
 import com.jackdaw.chatwithnpc.auxiliary.prompt.Prompt;
 import com.jackdaw.chatwithnpc.npc.NPCEntity;
@@ -21,7 +21,6 @@ public class ConversationHandler {
     public ConversationHandler(NPCEntity npc, PlayerEntity player) {
         this.npc = npc;
         this.player = player;
-        ChatWithNPCMod.LOGGER.debug("[chat-with-npc] Loading prompt for " + npc.getName());
         this.prompt = npc.getPrompt();
     }
 
@@ -39,26 +38,22 @@ public class ConversationHandler {
         npc.updateLastMessageTime(System.currentTimeMillis());
         Thread t = new Thread(() -> {
             try {
-                ChatWithNPCMod.LOGGER.info("[chat-with-npc] Getting response for " + npc.getName());
-                String response = RequestHandler.getAIResponse(prompt.getPrompt() + "What is your response: \n");
+                OpenAIHandler.updateSetting();
+                String response = OpenAIHandler.sendRequest(prompt.getPrompt() + "What is your response: \n");
                 player.sendMessage(Text.of("<" + npc.getName() + "> " + response));
                 npc.addMessageRecord(npc.getLastMessageTime(), response, npc.getName());
                 prompt.addNpcMessage(response);
             } catch (Exception e) {
                 player.sendMessage(Text.of("[chat-with-npc] Error getting response"));
                 ChatWithNPCMod.LOGGER.error(e.getMessage());
-            } finally {
-                ChatWithNPCMod.LOGGER.info("[chat-with-npc] Finished getting response");
             }
         });
         t.start();
     }
 
     public void startConversation() {
-        ChatWithNPCMod.LOGGER.debug("[chat-with-npc] Initializing conversation " + npc.getName() + " for " + player.getName());
         sendWaitMessage();
         prompt.setInitialPrompt();
-        ChatWithNPCMod.LOGGER.info("[chat-with-npc] The full prompt is: \n" + prompt.getPrompt());
         getResponse(player);
         updateTime = System.currentTimeMillis();
     }

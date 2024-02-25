@@ -24,7 +24,6 @@ public class Builder {
     private String history;
 
     public Builder setFromEntity(@NotNull NPCEntity npc) {
-        ChatWithNPCMod.LOGGER.debug("[chat-with-npc] Loading prompt from " + npc.getName());
         this.npcName = npc.getName();
         this.type = npc.getType();
         this.npcCareer = npc.getCareer();

@@ -43,7 +43,7 @@ public class LocalEnvironment implements Environment {
         } else {
             begin = "a place named " + name + ", ";
         }
-        return begin + "where the weather is " + weather + "And the environment is introduced as: " + prompt;
+        return begin + "where the weather is " + weather + ". And the environment is introduced as: " + prompt;
     }
 
     @Override

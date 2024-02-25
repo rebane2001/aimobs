@@ -2,13 +2,14 @@ package com.jackdaw.chatwithnpc;
 
 import com.jackdaw.chatwithnpc.auxiliary.command.CommandSet;
 import com.jackdaw.chatwithnpc.auxiliary.configuration.SettingManager;
+import com.jackdaw.chatwithnpc.conversation.ConversationManager;
 import com.jackdaw.chatwithnpc.data.DataManager;
 import com.jackdaw.chatwithnpc.environment.EnvironmentManager;
-import com.jackdaw.chatwithnpc.conversation.ConversationManager;
 import com.jackdaw.chatwithnpc.event.PlayerSendMessageCallback;
 import com.jackdaw.chatwithnpc.npc.NPCEntityManager;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.minecraft.util.ActionResult;
 import org.slf4j.Logger;
@@ -56,7 +57,6 @@ public class ChatWithNPCMod implements ModInitializer {
         CommandRegistrationCallback.EVENT.register(CommandSet::setupCommand);
         // Register the conversation
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
-            LOGGER.debug("[chat-with-npc] AttackEntityCallback: " + player.getName().getString() + "is trying to chat with" + entity.getName().getString());
             // The mod must be enabled
             if (!SettingManager.enabled) return ActionResult.PASS;
             // The player must be sneaking to start a conversation
@@ -64,16 +64,13 @@ public class ChatWithNPCMod implements ModInitializer {
             // The entity must have a custom name to be an NPC
             if (entity.getCustomName() == null) return ActionResult.PASS;
             String name = entity.getCustomName().getString();
-            LOGGER.debug("[chat-with-npc] The NPC is named: " + name);
             // register the NPC entity and start a conversation
             NPCEntityManager.registerNPCEntity(name, entity);
-            LOGGER.debug("[chat-with-npc] The NPC has been registered. Start a conversation with the player: " + player.getName().getString());
             ConversationManager.startConversation(NPCEntityManager.getNPCEntity(name), player);
             return ActionResult.FAIL;
         });
         // Register the player chat event
         PlayerSendMessageCallback.EVENT.register((player, message) -> {
-            LOGGER.info("[chat-with-npc] PlayerSendMessageCallback: exec!");
             // The mod must be enabled
             if (!SettingManager.enabled) return ActionResult.PASS;
             // The player must be in a conversation
@@ -81,7 +78,6 @@ public class ChatWithNPCMod implements ModInitializer {
             ConversationManager.getConversation(player).replyToEntity(message);
             return ActionResult.PASS;
         });
-        LOGGER.info("[chat-with-npc] chat-with-npc has been Loaded");
         // Check for out of time static data
         ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
         executorService.scheduleAtFixedRate(() -> {
@@ -91,5 +87,10 @@ public class ChatWithNPCMod implements ModInitializer {
                 LOGGER.error(e.getMessage());
             }
         }, 0, updateInterval, TimeUnit.MILLISECONDS);
+        // Shutdown the executor service when the server is stopped
+        ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
+            UpdateStaticData.close();
+            executorService.shutdown();
+        });
     }
 }

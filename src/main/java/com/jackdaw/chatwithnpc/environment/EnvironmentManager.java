@@ -42,6 +42,7 @@ public class EnvironmentManager {
     }
 
     public static void removeEnvironment(String name) {
+        environmentMap.get(name).getDataManager().save();
         environmentMap.remove(name);
     }
 
@@ -58,6 +59,12 @@ public class EnvironmentManager {
                 environment.getDataManager().save();
                 removeEnvironment(name);
             }
+        });
+    }
+
+    public static void endAllEnvironments() {
+        environmentMap.forEach((name, environment) -> {
+            removeEnvironment(name);
         });
     }
 }
